@@ -1,20 +1,20 @@
-# ADR 001: Playwright como browser engine
+# ADR 001: Playwright as browser engine
 
-**Fecha:** 2026-07-27
-**Contexto:** Necesitamos un browser headless para navegar SPAs, ejecutar axe-core, y recolectar violaciones de accesibilidad. Las opciones son Puppeteer (Chrome) y Playwright (multi-browser).
+**Date:** 2026-07-27
+**Context:** We need a headless browser to navigate SPAs, run axe-core, and collect accessibility violations. Options are Puppeteer (Chrome) and Playwright (multi-browser).
 
-**Decisión:** Usar Playwright.
+**Decision:** Use Playwright.
 
-**Justificación:**
-- Playwright soporta Chromium, Firefox y WebKit — permite auditar en múltiples motores
-- API más moderna y predecible que Puppeteer
-- Viene preinstalado en los runners de GitHub Actions (ubuntu-latest)
-- Mejor manejo de SPAs con `waitForNavigation`, `waitForSelector`, etc.
-- La comunidad se está moviendo de Puppeteer a Playwright
+**Justification:**
+- Playwright supports Chromium, Firefox, and WebKit — allows auditing on multiple engines
+- More modern and predictable API than Puppeteer
+- Pre-installed on GitHub Actions runners (ubuntu-latest)
+- Better SPA handling with `waitForNavigation`, `waitForSelector`, etc.
+- The community is moving from Puppeteer to Playwright
 
-**Consecuencias:**
-- Dependencia adicional (~30MB en node_modules)
-- Los tests de auditoría necesitan un browser instalado
-- En CI de GitHub Actions no requiere instalación extra
+**Consequences:**
+- Additional dependency (~30MB in node_modules)
+- Audit tests need a browser installed
+- On GitHub Actions CI, no extra installation required
 
-**Estado:** Aceptada
+**Status:** Accepted
