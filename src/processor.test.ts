@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { processViolations, getSuggestedFix } from './processor.js';
+import { describe, expect, it } from 'vitest';
+import { getSuggestedFix, processViolations } from './processor.js';
 import type { Violation } from './types.js';
 
 function makeViolation(overrides: Partial<Violation> & { id: string }): Violation {
@@ -60,11 +60,7 @@ describe('processViolations', () => {
       makeViolation({ id: 'serious-issue', impact: 'serious' }),
     ];
     const result = processViolations(violations);
-    expect(result.violations.map((v) => v.impact)).toEqual([
-      'critical',
-      'serious',
-      'minor',
-    ]);
+    expect(result.violations.map((v) => v.impact)).toEqual(['critical', 'serious', 'minor']);
   });
 
   it('handles multiple different violation types', () => {

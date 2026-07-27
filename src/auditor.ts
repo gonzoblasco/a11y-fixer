@@ -21,9 +21,7 @@ function getAxeSource(): string {
   const axePath = path.resolve(PROJECT_ROOT, 'node_modules', 'axe-core', 'axe.min.js');
 
   if (!fs.existsSync(axePath)) {
-    throw new Error(
-      `axe-core not found at ${axePath}. Run 'npm install' to install dependencies.`,
-    );
+    throw new Error(`axe-core not found at ${axePath}. Run 'npm install' to install dependencies.`);
   }
 
   axeSource = fs.readFileSync(axePath, 'utf-8');

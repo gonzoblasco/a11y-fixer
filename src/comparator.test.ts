@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { compare } from './comparator.js';
 import type { ProcessedResult, ProcessedViolation } from './types.js';
 
-function makeViolation(rule: string, selectors: string[], impact: string = 'moderate'): ProcessedViolation {
+function makeViolation(rule: string, selectors: string[], impact = 'moderate'): ProcessedViolation {
   return {
     rule,
     impact: impact as ProcessedViolation['impact'],

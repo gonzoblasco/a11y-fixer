@@ -1,7 +1,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import { configSchema, type Config } from './config.schema.js';
+import { type Config, configSchema } from './config.schema.js';
 
 const DEFAULT_CONFIG_PATH = '.a11y-fixer.yml';
 

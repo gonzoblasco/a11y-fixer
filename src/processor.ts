@@ -1,4 +1,4 @@
-import type { Violation, ProcessedViolation, ProcessedResult } from './types.js';
+import type { ProcessedResult, ProcessedViolation, Violation } from './types.js';
 
 const IMPACT_ORDER: Record<string, number> = {
   critical: 0,
@@ -31,14 +31,16 @@ export function processViolations(raw: Violation[]): ProcessedResult {
       });
     }
 
-    const entry = grouped.get(key)!;
+    const entry = grouped.get(key);
+    if (!entry) continue;
     for (const node of violation.nodes) {
       entry.elements.push(node);
     }
   }
 
-  const violations = Array.from(grouped.values())
-    .sort((a, b) => (IMPACT_ORDER[a.impact] ?? 99) - (IMPACT_ORDER[b.impact] ?? 99));
+  const violations = Array.from(grouped.values()).sort(
+    (a, b) => (IMPACT_ORDER[a.impact] ?? 99) - (IMPACT_ORDER[b.impact] ?? 99),
+  );
 
   // Attach suggested fixes
   for (const v of violations) {
@@ -175,9 +177,12 @@ export function getSuggestedFix(ruleId: string): string {
     ].join('\n'),
   };
 
-  return fixes[ruleId] ?? [
-    '**How to fix it:**',
-    `Review the WCAG documentation for rule "${ruleId}" at the link above.`,
-    'Consider using a tool like axe DevTools to get specific guidance for this issue.',
-  ].join('\n');
+  return (
+    fixes[ruleId] ??
+    [
+      '**How to fix it:**',
+      `Review the WCAG documentation for rule "${ruleId}" at the link above.`,
+      'Consider using a tool like axe DevTools to get specific guidance for this issue.',
+    ].join('\n')
+  );
 }

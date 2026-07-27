@@ -1,4 +1,4 @@
-import type { ProcessedViolation, ProcessedResult, EvolutionResult } from './types.js';
+import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 
 /**
  * Compare current audit results against a baseline to determine

@@ -1,4 +1,4 @@
-import { chromium, type Browser, type Page } from 'playwright';
+import { type Browser, type Page, chromium } from 'playwright';
 import type { AuthenticatedRoute } from './config.schema.js';
 
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
@@ -16,12 +16,7 @@ export interface BrowserManager {
 export async function createBrowser(): Promise<Browser> {
   return chromium.launch({
     headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu',
-    ],
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
   });
 }
 
@@ -103,9 +98,7 @@ export async function navigateToRoute(page: Page, url: string): Promise<void> {
   }
 
   if (!response.ok()) {
-    throw new Error(
-      `Navigation to ${url} failed with status ${response.status()}`,
-    );
+    throw new Error(`Navigation to ${url} failed with status ${response.status()}`);
   }
 }
 

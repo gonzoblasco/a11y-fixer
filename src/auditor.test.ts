@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as path from 'node:path';
-import { createBrowser, createPage, closeBrowser } from './browser.js';
-import { runAudit } from './auditor.js';
 import type { Browser } from 'playwright';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { runAudit } from './auditor.js';
+import { closeBrowser, createBrowser, createPage } from './browser.js';
 
 const FIXTURES_DIR = path.resolve(process.cwd(), 'tests', 'fixtures');
 

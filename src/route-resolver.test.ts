@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { resolveRoutes, detectRouteFromFile } from './route-resolver.js';
+import { describe, expect, it } from 'vitest';
 import type { Config } from './config.schema.js';
+import { detectRouteFromFile, resolveRoutes } from './route-resolver.js';
 
 const defaultConfig: Config = {
   level: 'AA',

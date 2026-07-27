@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { generateComment } from './comment.js';
-import type { ProcessedResult, ProcessedViolation, EvolutionResult } from './types.js';
 import type { Config } from './config.schema.js';
+import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 
 const defaultConfig: Config = {
   level: 'AA',
@@ -11,7 +11,7 @@ const defaultConfig: Config = {
   ai: { enabled: false },
 };
 
-function makeViolation(rule: string, selectors: string[], impact: string = 'moderate'): ProcessedViolation {
+function makeViolation(rule: string, selectors: string[], impact = 'moderate'): ProcessedViolation {
   return {
     rule,
     impact: impact as ProcessedViolation['impact'],
@@ -53,7 +53,9 @@ describe('generateComment', () => {
   });
 
   it('generates failing comment when threshold exceeded', () => {
-    const violations = [makeViolation('color-contrast', ['.btn', '.link', '.card', '.header', '.footer', '.nav'])];
+    const violations = [
+      makeViolation('color-contrast', ['.btn', '.link', '.card', '.header', '.footer', '.nav']),
+    ];
     const result = makeResult(violations);
     const evolution = makeEvolution({
       newViolations: violations,

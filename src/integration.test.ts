@@ -1,17 +1,17 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
 import * as os from 'node:os';
-import { loadConfig } from './config.js';
-import { resolveRoutes } from './route-resolver.js';
-import { createBrowser, createPage, closeBrowser } from './browser.js';
-import { runAudit } from './auditor.js';
-import { processViolations } from './processor.js';
-import { compare } from './comparator.js';
-import { generateComment } from './comment.js';
-import { saveBaseline, loadBaseline, clearCache } from './cache.js';
+import * as path from 'node:path';
 import type { Browser } from 'playwright';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { runAudit } from './auditor.js';
+import { closeBrowser, createBrowser, createPage } from './browser.js';
+import { clearCache, loadBaseline, saveBaseline } from './cache.js';
+import { generateComment } from './comment.js';
+import { compare } from './comparator.js';
+import { loadConfig } from './config.js';
 import type { Config } from './config.schema.js';
+import { processViolations } from './processor.js';
+import { resolveRoutes } from './route-resolver.js';
 
 const FIXTURES_DIR = path.resolve(process.cwd(), 'tests', 'fixtures');
 const TEST_SHA = 'test-integration-sha';
@@ -130,7 +130,12 @@ describe('Full pipeline integration', () => {
     const page = await createPage(browser);
 
     // Test all fixtures in sequence to ensure no crashes
-    const fixtures = ['good.html', 'bad-contrast.html', 'missing-alt.html', 'multiple-violations.html'];
+    const fixtures = [
+      'good.html',
+      'bad-contrast.html',
+      'missing-alt.html',
+      'multiple-violations.html',
+    ];
 
     for (const fixture of fixtures) {
       const filePath = `file://${path.join(FIXTURES_DIR, fixture)}`;

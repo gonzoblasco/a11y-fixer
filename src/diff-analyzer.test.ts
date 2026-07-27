@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { getChangedFiles } from './diff-analyzer.js';
 import { execSync } from 'node:child_process';
+import { describe, expect, it } from 'vitest';
+import { getChangedFiles } from './diff-analyzer.js';
 
 // Get the current repo's HEAD SHA for testing
 const HEAD_SHA = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();

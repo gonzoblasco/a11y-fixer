@@ -47,7 +47,8 @@ export function getLatestBaselineSha(): string | null {
     return null;
   }
 
-  const files = fs.readdirSync(CACHE_DIR)
+  const files = fs
+    .readdirSync(CACHE_DIR)
     .filter((f) => f.startsWith('baseline-') && f.endsWith('.json'))
     .sort()
     .reverse();

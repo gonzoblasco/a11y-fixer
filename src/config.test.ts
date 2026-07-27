@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
 import * as os from 'node:os';
+import * as path from 'node:path';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { loadConfig } from './config.js';
 
 function createTempDir(): string {
@@ -50,7 +50,9 @@ describe('loadConfig', () => {
   });
 
   it('parses a valid full config', () => {
-    writeConfig(tempDir, `
+    writeConfig(
+      tempDir,
+      `
 level: AAA
 max_impact: minor
 max_new_violations: 10
@@ -73,15 +75,16 @@ ignore:
     - color-contrast
   selectors:
     - .editor-preview
-`);
+`,
+    );
     const config = loadConfig(path.join(tempDir, '.a11y-fixer.yml'));
     expect(config.level).toBe('AAA');
     expect(config.max_impact).toBe('minor');
     expect(config.max_new_violations).toBe(10);
     expect(config.routes.core).toEqual(['/', '/login', '/dashboard']);
     expect(config.routes.authenticated).toHaveLength(1);
-    expect(config.routes.authenticated![0].path).toBe('/admin');
-    expect(config.routes.authenticated![0].auth.type).toBe('cookie');
+    expect(config.routes.authenticated?.[0].path).toBe('/admin');
+    expect(config.routes.authenticated?.[0].auth.type).toBe('cookie');
     expect(config.ai.enabled).toBe(true);
     expect(config.ai.provider).toBe('openai');
     expect(config.ignore?.rules).toEqual(['color-contrast']);
@@ -109,23 +112,29 @@ ignore:
   });
 
   it('throws on invalid auth type', () => {
-    writeConfig(tempDir, `
+    writeConfig(
+      tempDir,
+      `
 routes:
   authenticated:
     - path: /admin
       auth:
         type: magic
         value: x
-`);
+`,
+    );
     expect(() => loadConfig(path.join(tempDir, '.a11y-fixer.yml'))).toThrow();
   });
 
   it('throws on invalid ai provider', () => {
-    writeConfig(tempDir, `
+    writeConfig(
+      tempDir,
+      `
 ai:
   enabled: true
   provider: google
-`);
+`,
+    );
     expect(() => loadConfig(path.join(tempDir, '.a11y-fixer.yml'))).toThrow();
   });
 });

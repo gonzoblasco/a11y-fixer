@@ -1,5 +1,5 @@
-import type { ProcessedViolation, ProcessedResult, EvolutionResult } from './types.js';
 import type { Config } from './config.schema.js';
+import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 
 /**
  * Generate a structured PR comment following the DESIGN.md format.
@@ -59,9 +59,7 @@ function getBadge(result: ProcessedResult, evolution: EvolutionResult, config: C
     return '✅ **Accessibility Check: PASSING**';
   }
 
-  const newCount = evolution.newViolations.reduce(
-    (sum, v) => sum + v.elements.length, 0,
-  );
+  const newCount = evolution.newViolations.reduce((sum, v) => sum + v.elements.length, 0);
   const threshold = config.max_new_violations;
 
   if (newCount > threshold) {
@@ -102,7 +100,9 @@ function formatViolation(violation: ProcessedViolation): string {
   const impactPrefix = getImpactPrefix(violation.impact);
   const lines: string[] = [];
 
-  lines.push(`**${impactPrefix}** \`${violation.rule}\` — ${violation.description.split('\n\n')[0]}`);
+  lines.push(
+    `**${impactPrefix}** \`${violation.rule}\` — ${violation.description.split('\n\n')[0]}`,
+  );
 
   for (const element of violation.elements) {
     lines.push('');
@@ -128,11 +128,16 @@ function formatViolation(violation: ProcessedViolation): string {
  */
 function getImpactPrefix(impact: string): string {
   switch (impact) {
-    case 'critical': return '🔴 CRITICAL';
-    case 'serious': return '🟠 SERIOUS';
-    case 'moderate': return '🟡 MODERATE';
-    case 'minor': return '🔵 MINOR';
-    default: return impact.toUpperCase();
+    case 'critical':
+      return '🔴 CRITICAL';
+    case 'serious':
+      return '🟠 SERIOUS';
+    case 'moderate':
+      return '🟡 MODERATE';
+    case 'minor':
+      return '🔵 MINOR';
+    default:
+      return impact.toUpperCase();
   }
 }
 
@@ -142,11 +147,13 @@ function getImpactPrefix(impact: string): string {
 function formatEvolution(evolution: EvolutionResult): string {
   const lines: string[] = [];
 
-  lines.push(`**Evolution vs main:**`);
+  lines.push('**Evolution vs main:**');
 
   if (evolution.trend === 'first') {
     lines.push('');
-    lines.push('🆕 This is the first audit on this project. No previous history to compare against. The reported violations are the new baseline.');
+    lines.push(
+      '🆕 This is the first audit on this project. No previous history to compare against. The reported violations are the new baseline.',
+    );
     return lines.join('\n');
   }
 
@@ -155,10 +162,14 @@ function formatEvolution(evolution: EvolutionResult): string {
     lines.push(`- 🆕 **${evolution.newViolations.length} new** — violations introduced in this PR`);
   }
   if (evolution.fixedViolations.length > 0) {
-    lines.push(`- ✅ **${evolution.fixedViolations.length} fixed** — violations that existed in main and are no longer present`);
+    lines.push(
+      `- ✅ **${evolution.fixedViolations.length} fixed** — violations that existed in main and are no longer present`,
+    );
   }
   if (evolution.persistentViolations.length > 0) {
-    lines.push(`- 🔄 **${evolution.persistentViolations.length} persistent** — violations that already existed in main and remain`);
+    lines.push(
+      `- 🔄 **${evolution.persistentViolations.length} persistent** — violations that already existed in main and remain`,
+    );
   }
 
   lines.push('');
@@ -172,10 +183,14 @@ function formatEvolution(evolution: EvolutionResult): string {
  */
 function getTrendIndicator(trend: string): string {
   switch (trend) {
-    case 'improves': return '⬆️ This PR improves accessibility';
-    case 'worsens': return '⬇️ This PR worsens accessibility';
-    case 'neutral': return '➡️ Accessibility is neutral (same number of violations)';
-    default: return '📊 First audit — no trend data';
+    case 'improves':
+      return '⬆️ This PR improves accessibility';
+    case 'worsens':
+      return '⬇️ This PR worsens accessibility';
+    case 'neutral':
+      return '➡️ Accessibility is neutral (same number of violations)';
+    default:
+      return '📊 First audit — no trend data';
   }
 }
 
@@ -185,7 +200,9 @@ function getTrendIndicator(trend: string): string {
 function formatConfig(config: Config): string {
   const lines: string[] = [];
 
-  lines.push(`**Current config:** WCAG level \`${config.level}\`, max impact \`${config.max_impact}\`, max \`${config.max_new_violations}\` new violations.`);
+  lines.push(
+    `**Current config:** WCAG level \`${config.level}\`, max impact \`${config.max_impact}\`, max \`${config.max_new_violations}\` new violations.`,
+  );
 
   if (config.ai?.enabled) {
     lines.push(`AI explanations enabled (${config.ai.provider}).`);
