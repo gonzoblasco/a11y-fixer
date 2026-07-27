@@ -1,32 +1,32 @@
 # a11y-fixer — Architecture
 
-> **Estado:** Fase 0.2 (Arquitectura)
-> **Fecha:** 2026-07-27
-> **Basado en:** BRIEF.md, DEFINITION.md
+> **Status:** Phase 0.2 (Architecture)
+> **Date:** 2026-07-27
+> **Based on:** BRIEF.md, DEFINITION.md
 
 ---
 
-## Stack definitivo
+## Final stack
 
-| Capa | Tecnología | Versión | Justificación |
+| Layer | Technology | Version | Justification |
 |---|---|---|---|
-| Runtime | Node.js | 20+ LTS | Estándar para GitHub Actions, ESM nativo |
-| Lenguaje | TypeScript | 5.x | Stack de Gonzo, tipado estricto |
-| Action SDK | @actions/core | latest | SDK oficial de GitHub Actions |
-| Browser engine | Playwright | latest | Navegación SPA, más moderno que Puppeteer |
-| Motor de auditoría | axe-core | 4.x | Estándar de la industria, mantenido por Deque |
-| Testing | Vitest | latest | Rápido, ESM nativo, compatible con el stack |
-| Linting | Biome | latest | Reemplaza ESLint + Prettier |
-| IA (opcional) | OpenAI / Anthropic API | — | BYOK, el usuario trae su key |
+| Runtime | Node.js | 20+ LTS | Standard for GitHub Actions, native ESM |
+| Language | TypeScript | 5.x | Gonzo's stack, strict typing |
+| Action SDK | @actions/core | latest | Official GitHub Actions SDK |
+| Browser engine | Playwright | latest | SPA navigation, more modern than Puppeteer |
+| Audit engine | axe-core | 4.x | Industry standard, maintained by Deque |
+| Testing | Vitest | latest | Fast, native ESM, compatible with stack |
+| Linting | Biome | latest | Replaces ESLint + Prettier |
+| AI (optional) | OpenAI / Anthropic API | — | BYOK, user brings their own key |
 
-## Patrones arquitectónicos
+## Architectural patterns
 
-- **Pipeline architecture** — cada etapa del flujo es una función pura o un paso independiente
-- **Config as code** — toda la configuración vive en `.a11y-fixer.yml` en el repo
-- **Stateless** — no hay base de datos propia. El estado entre ejecuciones se cachea en artifacts de GitHub Actions
-- **BYOK AI** — la integración con IA es un plugin opcional, no un requisito
+- **Pipeline architecture** — each stage is a pure function or an independent step
+- **Config as code** — all configuration lives in `.a11y-fixer.yml` in the repo
+- **Stateless** — no database. State between runs is cached in GitHub Actions artifacts
+- **BYOK AI** — AI integration is an optional plugin, not a requirement
 
-## Componentes
+## Components
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -65,78 +65,78 @@
 │                           │                               │
 │  ┌────────────────────────▼───────────────────────────┐  │
 │  │              AI Explainer (optional)                │  │
-│  │  BYOK: enriquece comentarios con explicaciones      │  │
-│  │  contextualizadas al stack del proyecto              │  │
+│  │  BYOK: enriches comments with explanations          │  │
+│  │  contextualized to the project's stack               │  │
 │  └─────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Data flow (ejecución completa)
+## Data flow (full execution)
 
 ```
 1. PR opened / synchronized
    │
-2. GitHub Action se activa (pull_request / pull_request_target)
+2. GitHub Action triggers (pull_request / pull_request_target)
    │
-3. Cargar .a11y-fixer.yml del repo base
-   │   Validar con Zod schema
+3. Load .a11y-fixer.yml from base repo
+   │   Validate with Zod schema
    │
-4. Analizar git diff entre HEAD y base
-   │   Extraer: archivos modificados, rutas de páginas afectadas
+4. Analyze git diff between HEAD and base
+   │   Extract: modified files, affected page routes
    │
-5. Resolver rutas a escanear
-   │   Core routes (de config) + detected routes (del diff)
-   │   Desduplicar
+5. Resolve routes to scan
+   │   Core routes (from config) + detected routes (from diff)
+   │   Deduplicate
    │
-6. Para cada ruta:
+6. For each route:
    │   a. Launch Playwright browser (headless)
-   │   b. Navigate a la ruta
+   │   b. Navigate to route
    │   c. Inject axe-core
    │   d. Run audit
    │   e. Collect violations
-   │   f. Close page (reusar browser)
+   │   f. Close page (reuse browser)
    │
-7. Procesar resultados
-   │   Agrupar por: regla WCAG, impacto, elemento
-   │   Generar suggested fix (template-based)
+7. Process results
+   │   Group by: WCAG rule, impact, element
+   │   Generate suggested fix (template-based)
    │
-8. Cargar baseline desde artifacts de main
-   │   Si no existe → primera ejecución, no hay comparación
+8. Load baseline from main artifacts
+   │   If none → first run, no comparison
    │
-9. Comparar: current vs baseline
-   │   → violations_new (no estaban en baseline)
-   │   → violations_resolved (estaban en baseline, ya no)
-   │   → violations_persistent (están en ambos)
+9. Compare: current vs baseline
+   │   → violations_new (not in baseline)
+   │   → violations_resolved (were in baseline, gone now)
+   │   → violations_persistent (in both)
    │
-10. Generar comentario de PR
-    │   Resumen + tabla de violaciones + evolución + sugerencias
+10. Generate PR comment
+    │   Summary + violation table + evolution + suggestions
     │
-11. (Opcional) Si hay API key configurada:
-    │   Llamar a OpenAI/Anthropic para explicaciones detalladas
+11. (Optional) If API key is configured:
+    │   Call OpenAI/Anthropic for detailed explanations
     │
-12. Postear comentario en el PR (gh pr comment)
+12. Post comment on PR (gh pr comment)
     │
-13. Setear check status: ✅ / ⚠️ / ❌ según umbrales
+13. Set check status: ✅ / ⚠️ / ❌ based on thresholds
     │
-14. Guardar resultados como nuevo baseline (artifact)
+14. Save results as new baseline (artifact)
 ```
 
-## Schema de configuración (`.a11y-fixer.yml`)
+## Configuration schema (`.a11y-fixer.yml`)
 
 ```yaml
 # a11y-fixer configuration
 # Version: 1
 
-# Nivel WCAG mínimo
+# Minimum WCAG level
 level: AA # A | AA | AAA
 
-# Impacto máximo permitido antes de fallar el check
+# Maximum impact allowed before failing the check
 max_impact: serious # minor | moderate | serious | critical
 
-# Cantidad máxima de violaciones nuevas permitidas
+# Maximum number of new violations allowed
 max_new_violations: 5
 
-# Rutas core del proyecto (siempre se escanean)
+# Core project routes (always scanned)
 routes:
   core:
     - /
@@ -144,30 +144,30 @@ routes:
     - /dashboard
     - /settings
 
-# Rutas que requieren autenticación (se escanean con sesión)
+# Routes that require authentication (scanned with session)
 routes:
   authenticated:
     - path: /dashboard
       auth:
         type: cookie # cookie | header | token
-        value: "" # se inyecta desde secret de GitHub Actions
+        value: "" # injected from GitHub Actions secret
 
-# Configuración de IA (opcional, BYOK)
+# AI configuration (optional, BYOK)
 ai:
   enabled: false
   provider: openai # openai | anthropic
   model: gpt-4o-mini
-  # API key se pasa como secret de GitHub Actions, no en este archivo
+  # API key is passed as a GitHub Actions secret, not in this file
 
-# Reglas a ignorar (falsos positivos conocidos)
+# Rules to ignore (known false positives)
 ignore:
   rules:
-    - color-contrast # ejemplo: diseño intencional
+    - color-contrast # example: intentional design
   selectors:
-    - ".editor-preview" # ejemplo: contenido generado por terceros
+    - ".editor-preview" # example: third-party generated content
 ```
 
-## Estructura del proyecto
+## Project structure
 
 ```
 a11y-fixer/
@@ -177,14 +177,14 @@ a11y-fixer/
 ├── tsconfig.json
 ├── biome.json
 ├── vitest.config.ts
-├── .a11y-fixer.yml            # Ejemplo de configuración
+├── .a11y-fixer.yml            # Example configuration
 ├── .gitignore
 │
 ├── src/
-│   ├── action.ts              # Entry point del Action
-│   ├── config.ts              # Loader + schema de .a11y-fixer.yml
-│   ├── config.schema.ts       # Zod schema de configuración
-│   ├── diff-analyzer.ts       # Git diff → archivos cambiados
+│   ├── action.ts              # Action entry point
+│   ├── config.ts              # Loader + schema for .a11y-fixer.yml
+│   ├── config.schema.ts       # Zod config schema
+│   ├── diff-analyzer.ts       # Git diff → changed files
 │   ├── route-resolver.ts      # Core routes + detected routes
 │   ├── browser.ts             # Playwright launcher + manager
 │   ├── auditor.ts             # axe-core runner
@@ -192,9 +192,9 @@ a11y-fixer/
 │   ├── comparator.ts          # Current vs baseline
 │   ├── comment.ts             # PR comment generator (markdown)
 │   ├── ai-explainer.ts        # BYOK AI integration
-│   ├── cache.ts               # Artifact cache (subir/bajar)
-│   ├── github.ts              # GitHub API wrappers (comentarios, checks)
-│   └── types.ts               # Tipos compartidos
+│   ├── cache.ts               # Artifact cache (upload/download)
+│   ├── github.ts              # GitHub API wrappers (comments, checks)
+│   └── types.ts               # Shared types
 │
 ├── tests/
 │   ├── config.test.ts
@@ -223,21 +223,21 @@ a11y-fixer/
 └── README.md
 ```
 
-## Riesgos técnicos y mitigaciones
+## Technical risks and mitigations
 
-| Riesgo | Impacto | Mitigación |
+| Risk | Impact | Mitigation |
 |---|---|---|
-| axe-core no detecta issues en SPAs sin navegación completa | Medio | Playwright navega como usuario real, no solo HTML estático |
-| Tiempo de ejecución largo (muchas rutas) | Alto | Paralelizar rutas con workers, timeout configurable por ruta |
-| Falsos positivos de axe-core | Medio | Sistema de `ignore.rules` y `ignore.selectors` en config |
-| Cache de artifacts se pierde (GitHub los purga) | Bajo | Si no hay baseline, se reportan solo violaciones actuales sin evolución |
-| API de IA rate-limited o cara | Bajo | BYOK, el usuario controla su propio costo. Fallback a templates |
-| Playwright no disponible en el runner de GitHub Actions | Bajo | Viene preinstalado en los runners ubuntu-latest |
+| axe-core doesn't detect issues in SPAs without full navigation | Medium | Playwright navigates as a real user, not just static HTML |
+| Long execution time (many routes) | High | Parallelize routes with workers, configurable per-route timeout |
+| axe-core false positives | Medium | `ignore.rules` and `ignore.selectors` in config |
+| Artifact cache lost (GitHub purges them) | Low | If no baseline, report current violations only without evolution |
+| AI API rate-limited or expensive | Low | BYOK, user controls their own cost. Fallback to templates |
+| Playwright not available on GitHub Actions runner | Low | Pre-installed on ubuntu-latest runners |
 
-## Preguntas resueltas (de Fase 0.1)
+## Resolved questions (from Phase 0.1)
 
-- ✅ **Rutas a escanear:** Híbrido — core routes de config + detección automática desde el diff
-- ✅ **SPAs:** Playwright navega como usuario real (no solo HTML estático)
-- ✅ **Evolución:** Cache en artifacts de GitHub Actions, comparando contra la última ejecución en main
-- ✅ **Monorepos:** Cada package puede tener su propio `.a11y-fixer.yml`
-- ✅ **Formato de config:** YAML con schema Zod, documentado arriba
+- ✅ **Routes to scan:** Hybrid — core routes from config + automatic detection from diff
+- ✅ **SPAs:** Playwright navigates as a real user (not just static HTML)
+- ✅ **Evolution:** Cache in GitHub Actions artifacts, comparing against last main run
+- ✅ **Monorepos:** Each package can have its own `.a11y-fixer.yml`
+- ✅ **Config format:** YAML with Zod schema, documented above
