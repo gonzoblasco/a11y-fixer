@@ -1,0 +1,36 @@
+{
+  "name": "a11y-fixer",
+  "version": "0.1.0",
+  "description": "Accessibility audit bot for GitHub PRs",
+  "private": true,
+  "type": "module",
+  "main": "dist/action.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "@octokit/rest": "^22.0.1",
+    "axe-core": "^4.12.1",
+    "playwright": "^1.61.1",
+    "zod": "^3.23.0",
+    "yaml": "^2.7.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
