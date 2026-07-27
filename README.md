@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: gonzoblasco/a11y-fixer-v2@v0.1.0
+      - uses: gonzoblasco/a11y-fixer@v0.1.0
         with:
           config: .a11y-fixer.yml
 ```
