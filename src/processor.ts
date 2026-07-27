@@ -1,4 +1,5 @@
 import type { ProcessedResult, ProcessedViolation, Violation } from './types.js';
+import type { Config } from './config.schema.js';
 
 const IMPACT_ORDER: Record<string, number> = {
   critical: 0,
@@ -13,11 +14,13 @@ const IMPACT_ORDER: Record<string, number> = {
  * - Groups violations by WCAG rule
  * - Sorts by impact (critical → minor)
  * - Attaches suggested fixes from templates
+ * - Filters out ignored rules and selectors
  */
-export function processViolations(raw: Violation[]): ProcessedResult {
+export function processViolations(raw: Violation[], config?: Config): ProcessedResult {
+  const filtered = config?.ignore ? filterViolations(raw, config.ignore) : raw;
   const grouped = new Map<string, ProcessedViolation>();
 
-  for (const violation of raw) {
+  for (const violation of filtered) {
     const key = violation.id;
 
     if (!grouped.has(key)) {
@@ -50,6 +53,32 @@ export function processViolations(raw: Violation[]): ProcessedResult {
   const totalCount = violations.reduce((sum, v) => sum + v.elements.length, 0);
 
   return { violations, totalCount };
+}
+
+/**
+ * Filter violations based on ignore rules and selectors.
+ */
+function filterViolations(
+  raw: Violation[],
+  ignore: { rules?: string[]; selectors?: string[] },
+): Violation[] {
+  const ignoreRules = new Set(ignore.rules ?? []);
+  const ignoreSelectors = new Set(ignore.selectors ?? []);
+
+  if (ignoreRules.size === 0 && ignoreSelectors.size === 0) {
+    return raw;
+  }
+
+  return raw
+    .filter((v) => !ignoreRules.has(v.id))
+    .map((v) => {
+      if (ignoreSelectors.size === 0) return v;
+      const filteredNodes = v.nodes.filter((n) => {
+        return !ignoreSelectors.has(n.selector);
+      });
+      return { ...v, nodes: filteredNodes };
+    })
+    .filter((v) => v.nodes.length > 0);
 }
 
 /**

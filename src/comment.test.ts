@@ -11,7 +11,7 @@ const defaultConfig: Config = {
   ai: { enabled: false },
 };
 
-function makeViolation(rule: string, selectors: string[], impact = 'moderate'): ProcessedViolation {
+function makeViolation(rule: string, selectors: string[], impact = 'serious'): ProcessedViolation {
   return {
     rule,
     impact: impact as ProcessedViolation['impact'],

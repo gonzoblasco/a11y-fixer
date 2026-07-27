@@ -157,3 +157,102 @@ describe('getSuggestedFix', () => {
     expect(fix).toContain('WCAG documentation');
   });
 });
+
+describe('ignore rules', () => {
+  it('filters out ignored rules', () => {
+    const violations = [
+      makeViolation({ id: 'color-contrast' }),
+      makeViolation({ id: 'image-alt' }),
+    ];
+    const result = processViolations(violations, {
+      level: 'AA',
+      max_impact: 'serious',
+      max_new_violations: 5,
+      routes: { core: ['/'] },
+      ai: { enabled: false },
+      ignore: { rules: ['color-contrast'] },
+    });
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].rule).toBe('image-alt');
+  });
+
+  it('filters out ignored selectors', () => {
+    const violations = [
+      makeViolation({
+        id: 'color-contrast',
+        nodes: [
+          { selector: '.btn', html: '<button class="btn">x</button>', failureSummary: 'fix' },
+          { selector: '.link', html: '<a class="link">x</a>', failureSummary: 'fix' },
+        ],
+      }),
+    ];
+    const result = processViolations(violations, {
+      level: 'AA',
+      max_impact: 'serious',
+      max_new_violations: 5,
+      routes: { core: ['/'] },
+      ai: { enabled: false },
+      ignore: { selectors: ['.btn'] },
+    });
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].elements).toHaveLength(1);
+    expect(result.violations[0].elements[0].selector).toBe('.link');
+  });
+
+  it('applies both rule and selector filters', () => {
+    const violations = [
+      makeViolation({
+        id: 'color-contrast',
+        nodes: [
+          { selector: '.btn', html: '<button class="btn">x</button>', failureSummary: 'fix' },
+        ],
+      }),
+      makeViolation({
+        id: 'image-alt',
+        nodes: [
+          { selector: '.img', html: '<img class="img">', failureSummary: 'fix' },
+          { selector: '.icon', html: '<img class="icon">', failureSummary: 'fix' },
+        ],
+      }),
+    ];
+    const result = processViolations(violations, {
+      level: 'AA',
+      max_impact: 'serious',
+      max_new_violations: 5,
+      routes: { core: ['/'] },
+      ai: { enabled: false },
+      ignore: { rules: ['color-contrast'], selectors: ['.icon'] },
+    });
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].rule).toBe('image-alt');
+    expect(result.violations[0].elements).toHaveLength(1);
+    expect(result.violations[0].elements[0].selector).toBe('.img');
+  });
+
+  it('does nothing with empty ignore config', () => {
+    const violations = [makeViolation({ id: 'color-contrast' })];
+    const result = processViolations(violations, {
+      level: 'AA',
+      max_impact: 'serious',
+      max_new_violations: 5,
+      routes: { core: ['/'] },
+      ai: { enabled: false },
+      ignore: {},
+    });
+    expect(result.violations).toHaveLength(1);
+  });
+
+  it('does not crash when ignoring a non-existent rule', () => {
+    const violations = [makeViolation({ id: 'color-contrast' })];
+    const result = processViolations(violations, {
+      level: 'AA',
+      max_impact: 'serious',
+      max_new_violations: 5,
+      routes: { core: ['/'] },
+      ai: { enabled: false },
+      ignore: { rules: ['nonexistent-rule'] },
+    });
+    expect(result.violations).toHaveLength(1);
+    expect(result.violations[0].rule).toBe('color-contrast');
+  });
+});

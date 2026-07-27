@@ -1,5 +1,6 @@
 import type { Config } from './config.schema.js';
 import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
+import { evaluateThresholds } from './thresholds.js';
 
 /**
  * Generate a structured PR comment following the DESIGN.md format.
@@ -55,22 +56,16 @@ export function generateComment(
  * Generate the badge line based on results and thresholds.
  */
 function getBadge(result: ProcessedResult, evolution: EvolutionResult, config: Config): string {
-  if (result.totalCount === 0) {
-    return '✅ **Accessibility Check: PASSING**';
+  const threshold = evaluateThresholds(result, evolution, config);
+
+  switch (threshold.status) {
+    case 'failing':
+      return `❌ **Accessibility Check: FAILING** — ${threshold.reason}`;
+    case 'warning':
+      return `⚠️ **Accessibility Check: WARNING** — ${threshold.reason}`;
+    default:
+      return '✅ **Accessibility Check: PASSING**';
   }
-
-  const newCount = evolution.newViolations.reduce((sum, v) => sum + v.elements.length, 0);
-  const threshold = config.max_new_violations;
-
-  if (newCount > threshold) {
-    return `❌ **Accessibility Check: FAILING** — ${newCount} new violations (threshold: ${threshold})`;
-  }
-
-  if (newCount > 0) {
-    return `⚠️ **Accessibility Check: WARNING** — ${newCount} new violations (threshold: ${threshold})`;
-  }
-
-  return '✅ **Accessibility Check: PASSING**';
 }
 
 /**
