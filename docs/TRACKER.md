@@ -22,23 +22,19 @@
 
 ### 1.1.1 — Initialize project scaffold
 
-- [ ] Create `package.json` with dependencies:
-  - `@actions/core`, `@actions/github`, `@octokit/rest`
-  - `axe-core`, `playwright`
-  - `zod` (config validation)
-  - `typescript`, `@types/node`, `vitest`, `biome`
-- [ ] Create `tsconfig.json` (strict, ESM, Node.js 20 target)
-- [ ] Create `biome.json` (defaults, no ESLint/Prettier)
-- [ ] Create `vitest.config.ts`
-- [ ] Create `.gitignore` (node_modules, dist, .next, playwright cache)
-- [ ] Run `npm install` and verify it compiles
-- [ ] Run `npx biome check` — zero errors
+- [x] Create `package.json` with dependencies
+- [x] Create `tsconfig.json` (strict, ESM, Node.js 20 target)
+- [x] Create `biome.json` (defaults, no ESLint/Prettier)
+- [x] Create `vitest.config.ts`
+- [x] Create `.gitignore` (node_modules, dist, .next, playwright cache)
+- [x] Run `npm install` and verify it compiles
+- [x] Run `npx biome check` — zero errors
 
 **Verification:** `npm run build` exits 0, `npx biome check` exits 0
 
 ### 1.1.2 — Create action.yml
 
-- [ ] Create `action.yml` with:
+- [x] Create `action.yml` with:
   - `name: a11y-fixer`
   - `description: Accessibility audit bot for PRs`
   - `author: gonzoblasco`
@@ -50,18 +46,8 @@
 
 ### 1.1.3 — Implement config.ts + config.schema.ts
 
-- [ ] Create `src/config.schema.ts` with Zod schema for `.a11y-fixer.yml`:
-  - `level`: enum `A | AA | AAA`, default `AA`
-  - `max_impact`: enum `minor | moderate | serious | critical`, default `serious`
-  - `max_new_violations`: number, default `5`
-  - `routes.core`: array of strings, default `["/"]`
-  - `routes.authenticated`: optional array of `{path, auth: {type, value}}`
-  - `ai.enabled`: boolean, default `false`
-  - `ai.provider`: optional enum `openai | anthropic`
-  - `ai.model`: optional string
-  - `ignore.rules`: optional array of strings
-  - `ignore.selectors`: optional array of strings
-- [ ] Create `src/config.ts`:
+- [x] Create `src/config.schema.ts` with Zod schema for `.a11y-fixer.yml`
+- [x] Create `src/config.ts`:
   - `loadConfig(configPath: string): Config`
   - Reads YAML file, parses with Zod, returns typed config
   - Falls back to defaults for missing fields
@@ -69,14 +55,97 @@
 
 ### 1.1.4 — Config validation tests
 
-- [ ] Test: valid minimal config (only required fields)
-- [ ] Test: valid full config (all fields)
-- [ ] Test: invalid level value → error
-- [ ] Test: invalid impact value → error
-- [ ] Test: missing file → fallback to defaults
-- [ ] Test: empty file → fallback to defaults
+- [x] Test: valid minimal config (only required fields)
+- [x] Test: valid full config (all fields)
+- [x] Test: invalid level value → error
+- [x] Test: invalid impact value → error
+- [x] Test: missing file → fallback to defaults
+- [x] Test: empty file → fallback to defaults
 
-**Verification:** `npx vitest run src/config.test.ts` — all pass
+**Verification:** `npx vitest run src/config.test.ts` — 10 passed
+
+---
+
+## Epic 1.2 — Diff Analyzer & Route Resolver
+
+**Goal:** Given a git diff, determine which routes to scan.
+
+### 1.2.1 — Implement diff-analyzer.ts
+
+- [x] Create `src/diff-analyzer.ts`
+- [x] Handle: empty diff, binary files, deleted files
+
+### 1.2.2 — Implement route-resolver.ts
+
+- [x] Create `src/route-resolver.ts`
+- [x] Deduplicates, returns sorted unique routes
+
+### 1.2.3 — Next.js App Router detection
+
+- [x] Map file paths to URL routes (root, nested, dynamic segments, API exclusion)
+- [x] Handle: group routes, layout files (skip), loading files (skip)
+
+### 1.2.4 — Route resolution tests
+
+- [x] 17 tests: core only, core + detected, dedup, no pages, dynamic, API exclusion, empty, normalization, sorting
+- [x] 4 tests: diff-analyzer (changed files, self-comparison, invalid SHA, path format)
+
+**Verification:** `npx vitest run src/route-resolver.test.ts` — 17 passed, `npx vitest run src/diff-analyzer.test.ts` — 4 passed
+
+---
+
+## Epic 1.3 — Browser & Auditor
+
+**Goal:** Launch Playwright, navigate to routes, run axe-core, collect violations.
+
+### 1.3.1 — Implement browser.ts
+
+- [ ] Create `src/browser.ts`:
+  - `createBrowser(): Promise<Browser>` — launch Chromium headless
+  - `createPage(browser: Browser): Promise<Page>` — new page with sensible defaults
+  - `navigateToRoute(page: Page, url: string): Promise<void>` — navigate, wait for load
+  - `closeBrowser(browser: Browser): Promise<void>` — cleanup
+- [ ] Configure: `headless: true`, viewport 1280x720, no sandbox for CI
+- [ ] Error handling: timeout, navigation failure, browser crash
+
+### 1.3.2 — Implement auditor.ts
+
+- [ ] Create `src/auditor.ts`:
+  - `runAudit(page: Page): Promise<Violation[]>`
+  - Inject axe-core source into page
+  - Run `axe.run()` with configured level/impact
+  - Return structured violations
+- [ ] Each violation includes: `id`, `impact`, `description`, `help`, `helpUrl`, `nodes[]` with `selector`, `html`, `failureSummary`
+
+### 1.3.3 — Authenticated route handling
+
+- [ ] Before navigating to authenticated routes:
+  - If `auth.type === 'cookie'`: set cookie on page context
+  - If `auth.type === 'header'`: set extra HTTP headers
+  - If `auth.type === 'token'`: set Authorization header
+- [ ] Verify page loaded (not redirected to login)
+
+### 1.3.4 — Timeout + error handling
+
+- [ ] Configurable timeout per route (default: 30s)
+- [ ] On timeout: log warning, skip route, continue
+- [ ] On navigation error: log error, skip route, continue
+- [ ] On axe-core error: log error, skip route, continue
+- [ ] Never crash the whole audit for one bad route
+
+### 1.3.5 — Audit tests with HTML fixtures
+
+- [ ] Create `tests/fixtures/` with HTML files:
+  - `good.html` — no violations
+  - `bad-contrast.html` — color contrast violation
+  - `missing-alt.html` — missing alt text
+  - `multiple-violations.html` — 3+ violations of different types
+- [ ] Test: good page → 0 violations
+- [ ] Test: bad contrast → 1+ violations of type `color-contrast`
+- [ ] Test: missing alt → 1+ violations of type `image-alt`
+- [ ] Test: multiple violations → correct count and types
+
+**Verification:** `npx vitest run src/auditor.test.ts` — all pass
 
 ---
 
