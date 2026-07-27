@@ -1,258 +1,260 @@
 # a11y-fixer — Design (Voice & Tone)
 
-> **Estado:** Fase 0.3 (Diseño)
-> **Fecha:** 2026-07-27
-> **Basado en:** BRIEF.md, DEFINITION.md, ARCHITECTURE.md
+> **Status:** Phase 0.3 (Design)
+> **Date:** 2026-07-27
+> **Based on:** BRIEF.md, DEFINITION.md, ARCHITECTURE.md
 
 ---
 
-## 1. Personalidad del bot
+## 1. Bot personality
 
-**Nombre:** a11y-fixer (sin apodos, sin mascota, sin emojis de robot)
+**Name:** a11y-fixer (no nicknames, no mascot, no robot emojis)
 
-**Voz:** Técnica, directa, pedagógica. Como un colega senior que sabe de accesibilidad y te explica sin hacerte sentir mal por no saber.
+**Language:** English. GitHub is a global developer platform — comments must be understandable by any developer, anywhere.
 
-**Tono:**
-- ✅ **Informativo** — "Se encontraron 3 violaciones de contraste de color"
-- ✅ **Pedagógico** — "Los botones necesitan un ratio de contraste de al menos 4.5:1 contra el fondo"
-- ✅ **Constructivo** — "Agregar un label al input resuelve este issue"
-- ❌ **Condescendiente** — "Esto es un error básico que deberías conocer"
-- ❌ **Burocrático** — "Se ha detectado una no-conformidad con el estándar WCAG 2.2"
-- ❌ **Falso amigable** — "¡Hola! ¡Qué bueno verte por acá! Vamos a revisar tu PR juntos :)"
+**Voice:** Technical, direct, pedagogical. Like a senior colleague who knows accessibility and explains without making you feel bad for not knowing.
 
-**Regla de oro:** Si un dev lee el comentario y sabe exactamente qué tiene que hacer para arreglarlo, el tono funcionó.
+**Tone:**
+- ✅ **Informative** — "Found 3 color contrast violations"
+- ✅ **Pedagogical** — "Buttons need a contrast ratio of at least 4.5:1 against the background"
+- ✅ **Constructive** — "Adding a label to the input resolves this issue"
+- ❌ **Condescending** — "This is a basic error you should know"
+- ❌ **Bureaucratic** — "A non-conformity with WCAG 2.2 has been detected"
+- ❌ **Fake friendly** — "Hey there! So glad you're here! Let's review your PR together :)"
+
+**Golden rule:** If a dev reads the comment and knows exactly what to do to fix it, the tone worked.
 
 ---
 
-## 2. Estructura del comentario
+## 2. Comment structure
 
-El comentario se divide en 4 secciones claras, en este orden:
+The comment is divided into 4 clear sections, in this order:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  [BADGE] Accessibility Check — PASSING / WARNING / FAIL  │
 │                                                         │
-│  ## Resumen                                             │
-│  Una línea con el resultado general.                    │
+│  ## Summary                                             │
+│  One line with the overall result.                      │
 │                                                         │
-│  ## Violaciones                                         │
-│  Lista de issues encontrados, cada uno con:             │
-│  - Regla WCAG violada                                   │
-│  - Elemento afectado                                    │
-│  - Impacto                                              │
-│  - Cómo arreglarlo                                      │
+│  ## Violations                                          │
+│  List of issues found, each with:                       │
+│  - WCAG rule violated                                   │
+│  - Affected element                                     │
+│  - Impact                                               │
+│  - How to fix it                                        │
 │                                                         │
-│  ## Evolución                                           │
-│  Cómo cambió la accesibilidad vs la rama base.          │
+│  ## Evolution                                           │
+│  How accessibility changed vs the base branch.          │
 │                                                         │
-│  ## Configuración                                       │
-│  Umbral actual y enlace a la documentación.             │
+│  ## Configuration                                       │
+│  Current threshold and link to docs.                    │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ### 2.1 Badge
 
-El badge es el primer elemento visible. Usa etiquetas de GitHub (no imágenes externas):
+The badge is the first visible element. Uses GitHub labels (no external images):
 
 ```
-✅ **Accessibility Check: PASSING** — 0 violaciones nuevas
-⚠️ **Accessibility Check: WARNING** — 2 violaciones nuevas (umbral: 5)
-❌ **Accessibility Check: FAILING** — 8 violaciones nuevas (umbral: 5)
+✅ **Accessibility Check: PASSING** — 0 new violations
+⚠️ **Accessibility Check: WARNING** — 2 new violations (threshold: 5)
+❌ **Accessibility Check: FAILING** — 8 new violations (threshold: 5)
 ```
 
-### 2.2 Resumen
+### 2.2 Summary
 
-Una línea, sin vueltas:
-
-```
-No se encontraron violaciones nuevas de accesibilidad en este PR.
-```
+One line, no fluff:
 
 ```
-Se encontraron 3 violaciones nuevas de accesibilidad. 2 están por debajo del umbral configurado, 1 excede el máximo permitido.
+No new accessibility violations found in this PR.
 ```
 
 ```
-Este PR introduce 8 violaciones nuevas de accesibilidad, superando el umbral de 5 configurado en .a11y-fixer.yml.
+Found 3 new accessibility violations. 2 are within the configured threshold, 1 exceeds the maximum allowed.
 ```
 
-### 2.3 Violaciones
+```
+This PR introduces 8 new accessibility violations, exceeding the threshold of 5 set in .a11y-fixer.yml.
+```
 
-Cada violación se muestra como un item de lista con estructura consistente:
+### 2.3 Violations
+
+Each violation is a list item with a consistent structure:
 
 ```
-**{impacto}** `{regla WCAG}` — {descripción corta}
+**{impact}** `{wcag rule}` — {short description}
 
-- **Elemento:** `{selector CSS}`
-- **Impacto:** {critical / serious / moderate / minor}
-- **WCAG:** {criterio} — {nivel}
-- **Cómo arreglarlo:**
-  > {explicación clara de qué hacer}
+- **Element:** `{CSS selector}`
+- **Impact:** {critical / serious / moderate / minor}
+- **WCAG:** {criterion} — {level}
+- **How to fix it:**
+  > {clear explanation of what to do}
   >
-  > ```{lenguaje}
-  > {ejemplo de código}
+  > ```{language}
+  > {code example}
   > ```
 ```
 
-Ejemplo real:
+Real example:
 
 ```
-**🔴 CRITICAL** `color-contrast` — El texto no tiene suficiente contraste con el fondo
+**🔴 CRITICAL** `color-contrast` — Text does not have enough contrast against the background
 
-- **Elemento:** `.btn-primary`
-- **Impacto:** critical
+- **Element:** `.btn-primary`
+- **Impact:** critical
 - **WCAG:** 1.4.3 — AA
-- **Cómo arreglarlo:**
-  > El texto necesita un ratio de contraste de al menos 4.5:1 contra el fondo.
-  > Probá estos colores:
+- **How to fix it:**
+  > Text needs a contrast ratio of at least 4.5:1 against the background.
+  > Try these colors:
   >
   > ```css
   > .btn-primary {
   >   background-color: #1a73e8;
-  >   color: #ffffff; /* ratio 6.3:1 sobre #1a73e8 */
+  >   color: #ffffff; /* ratio 6.3:1 over #1a73e8 */
   > }
   > ```
 ```
 
-Los impactos se muestran con un prefijo visual:
+Impacts are shown with a visual prefix:
 
-| Impacto | Prefijo | Color semántico |
+| Impact | Prefix | Semantic color |
 |---|---|---|
-| critical | 🔴 CRITICAL | Rojo |
-| serious | 🟠 SERIOUS | Naranja |
-| moderate | 🟡 MODERATE | Amarillo |
-| minor | 🔵 MINOR | Azul |
+| critical | 🔴 CRITICAL | Red |
+| serious | 🟠 SERIOUS | Orange |
+| moderate | 🟡 MODERATE | Yellow |
+| minor | 🔵 MINOR | Blue |
 
-### 2.4 Evolución
+### 2.4 Evolution
 
-Sección que muestra cómo cambió la accesibilidad respecto a la rama base:
+Section showing how accessibility changed relative to the base branch:
 
 ```
-**Evolución vs main:**
+**Evolution vs main:**
 
-- 🆕 **3 nuevas** — violaciones introducidas en este PR
-- ✅ **1 resuelta** — violación que existía en main y ya no está
-- 🔄 **2 persistentes** — violaciones que ya estaban en main y siguen
+- 🆕 **3 new** — violations introduced in this PR
+- ✅ **1 fixed** — violation that existed in main and is no longer present
+- 🔄 **2 persistent** — violations that already existed in main and remain
 
-**Tendencia:** ⬆️ Este PR empeora la accesibilidad (3 nuevas, 1 resuelta)
+**Trend:** ⬆️ This PR improves accessibility (1 new, 3 fixed)
 ```
 
-Posibles tendencias:
+Possible trends:
 
-| Tendencia | Indicador | Condición |
+| Trend | Indicator | Condition |
 |---|---|---|
-| Mejora | ⬆️ Mejora | nuevas < resueltas |
-| Empeora | ⬇️ Empeora | nuevas > resueltas |
-| Neutral | ➡️ Neutral | nuevas = resueltas |
-| Primera vez | 🆕 Primera auditoría | No hay baseline |
+| Improves | ⬆️ Improves | new < fixed |
+| Worsens | ⬇️ Worsens | new > fixed |
+| Neutral | ➡️ Neutral | new = fixed |
+| First time | 🆕 First audit | No baseline exists |
 
-### 2.5 Configuración
+### 2.5 Configuration
 
-Al pie, información sobre los umbrales actuales:
-
-```
-**Configuración actual:** WCAG nivel `AA`, impacto máximo `serious`, máximo `5` violaciones nuevas.
-[Ver documentación de configuración →](link)
-```
-
-Si el check falló, se agrega:
+At the bottom, info about current thresholds:
 
 ```
-Para ajustar estos umbrales, editá `.a11y-fixer.yml` en la raíz del proyecto.
+**Current config:** WCAG level `AA`, max impact `serious`, max `5` new violations.
+[View configuration docs →](link)
+```
+
+If the check failed, add:
+
+```
+To adjust these thresholds, edit `.a11y-fixer.yml` at the root of the project.
 ```
 
 ---
 
-## 3. Estados del check
+## 3. Check states
 
-El bot setea un check status en el PR que refleja el resultado:
+The bot sets a check status on the PR reflecting the result:
 
-| Estado | Check | Condición |
+| State | Check | Condition |
 |---|---|---|
-| ✅ Passing | `success` | 0 violaciones nuevas, o todas por debajo del umbral |
-| ⚠️ Warning | `neutral` | Violaciones nuevas pero dentro del umbral configurado |
-| ❌ Failing | `failure` | Violaciones nuevas superan el umbral configurado |
-| 🔄 Skipped | `skipped` | No se detectaron páginas para escanear (PR de solo docs, por ej.) |
-| 💥 Error | `error` | Error interno del action (no se pudo correr la auditoría) |
+| ✅ Passing | `success` | 0 new violations, or all below threshold |
+| ⚠️ Warning | `neutral` | New violations exist but within configured threshold |
+| ❌ Failing | `failure` | New violations exceed the configured threshold |
+| 🔄 Skipped | `skipped` | No pages detected to scan (docs-only PR, etc.) |
+| 💥 Error | `error` | Internal action error (audit could not run) |
 
 ---
 
-## 4. Comentarios para casos especiales
+## 4. Special case comments
 
-### Sin violaciones
+### No violations
 
 ```
 ✅ **Accessibility Check: PASSING**
 
-No se encontraron violaciones nuevas de accesibilidad en este PR.
+No new accessibility violations found in this PR.
 
-**Evolución vs main:** sin cambios. Se mantiene el estado anterior.
+**Evolution vs main:** no changes. Previous state is maintained.
 ```
 
-### Solo cambios de configuración / docs
+### Config / docs only changes
 
 ```
 🔄 **Accessibility Check: SKIPPED**
 
-Este PR no modifica páginas ni componentes. Solo se auditan PRs que afectan rutas del proyecto.
+This PR does not modify pages or components. Only PRs that affect project routes are audited.
 
-Si este PR debería haber sido escaneado, verificá las rutas configuradas en `.a11y-fixer.yml`.
+If this PR should have been scanned, check the routes configured in `.a11y-fixer.yml`.
 ```
 
-### Error en la auditoría
+### Audit error
 
 ```
 💥 **Accessibility Check: ERROR**
 
-No se pudo completar la auditoría de accesibilidad.
+The accessibility audit could not be completed.
 
-**Motivo:** {mensaje de error}
-**Ruta fallida:** {ruta que causó el error}
+**Reason:** {error message}
+**Failed route:** {route that caused the error}
 
-Esto no bloquea el merge, pero las violaciones de accesibilidad no fueron evaluadas.
+This does not block the merge, but accessibility violations were not evaluated.
 ```
 
-### Primera auditoría (sin baseline)
+### First audit (no baseline)
 
 ```
 ✅ **Accessibility Check: PASSING**
 
-Se encontraron 2 violaciones de accesibilidad en este PR.
+Found 2 accessibility violations in this PR.
 
-**Nota:** Esta es la primera auditoría en este proyecto. No hay historial previo para comparar evolución. Las violaciones reportadas son el nuevo baseline.
+**Note:** This is the first audit on this project. There is no previous history to compare evolution against. The reported violations are the new baseline.
 ```
 
 ---
 
-## 5. Reglas de escritura
+## 5. Writing rules
 
-1. **Nunca usar em dash (—).** Usar guión común (-). El em dash no está en el teclado de un dev.
-2. **Nunca usar "por favor" o "gracias".** El bot no está pidiendo favores, está reportando facts.
-3. **Los selectores CSS van en backticks.** Siempre.
-4. **Los ejemplos de código van en blocks con lenguaje.** Siempre.
-5. **Una violación = un item de lista.** No agrupar múltiples issues en un mismo párrafo.
-6. **El "cómo arreglarlo" debe ser accionable.** No "mejorar el contraste", sino "cambiá el color del texto a #ffffff".
-7. **No repetir información.** Si la regla WCAG ya dice "1.4.3", no hace falta escribir "Contraste Mínimo" al lado.
-8. **Los números van en dígitos.** "3 violaciones", no "tres violaciones".
+1. **Never use em dash (—).** Use regular hyphen (-). The em dash isn't on a standard keyboard and makes it obvious the text wasn't written by a developer.
+2. **Never use "please" or "thank you".** The bot is not asking for favors, it's reporting facts.
+3. **CSS selectors go in backticks.** Always.
+4. **Code examples go in fenced blocks with language.** Always.
+5. **One violation = one list item.** Do not group multiple issues in the same paragraph.
+6. **"How to fix it" must be actionable.** Not "improve contrast", but "change the text color to #ffffff".
+7. **Don't repeat information.** If the WCAG rule already says "1.4.3", you don't need to write "Contrast Minimum" next to it.
+8. **Numbers use digits.** "3 violations", not "three violations".
 
 ---
 
-## 6. Ejemplos completos
+## 6. Complete examples
 
-### Escenario: PR con violaciones nuevas que superan el umbral
+### Scenario: PR with violations exceeding threshold
 
 ```
-❌ **Accessibility Check: FAILING** — 8 violaciones nuevas (umbral: 5)
+❌ **Accessibility Check: FAILING** — 8 new violations (threshold: 5)
 
-Se encontraron 8 violaciones nuevas de accesibilidad. Este PR supera el umbral de 5 configurado en .a11y-fixer.yml.
+Found 8 new accessibility violations. This PR exceeds the threshold of 5 set in .a11y-fixer.yml.
 
-**🔴 CRITICAL** `color-contrast` — El texto no tiene suficiente contraste con el fondo
+**🔴 CRITICAL** `color-contrast` — Text does not have enough contrast against the background
 
-- **Elemento:** `.btn-primary`
-- **Impacto:** critical
+- **Element:** `.btn-primary`
+- **Impact:** critical
 - **WCAG:** 1.4.3 — AA
-- **Cómo arreglarlo:**
-  > El texto necesita un ratio de contraste de al menos 4.5:1 contra el fondo.
+- **How to fix it:**
+  > Text needs a contrast ratio of at least 4.5:1 against the background.
   >
   > ```css
   > .btn-primary {
@@ -261,82 +263,82 @@ Se encontraron 8 violaciones nuevas de accesibilidad. Este PR supera el umbral d
   > }
   > ```
 
-**🟠 SERIOUS** `aria-valid-attr` — El atributo ARIA `aria-labeledby` no es válido
+**🟠 SERIOUS** `aria-valid-attr` — The ARIA attribute `aria-labeledby` is not valid
 
-- **Elemento:** `#search-input`
-- **Impacto:** serious
+- **Element:** `#search-input`
+- **Impact:** serious
 - **WCAG:** 4.1.1 — A
-- **Cómo arreglarlo:**
-  > El atributo correcto es `aria-labelledby` (con doble "l").
+- **How to fix it:**
+  > The correct attribute is `aria-labelledby` (double "l").
   >
   > ```html
   > <input id="search-input" aria-labelledby="search-label" />
   > ```
 
-**Evolución vs main:**
+**Evolution vs main:**
 
-- 🆕 **8 nuevas** — violaciones introducidas en este PR
-- ✅ **0 resueltas**
-- 🔄 **3 persistentes** — violaciones que ya estaban en main y siguen
+- 🆕 **8 new** — violations introduced in this PR
+- ✅ **0 fixed**
+- 🔄 **3 persistent** — violations that already existed in main and remain
 
-**Tendencia:** ⬇️ Este PR empeora la accesibilidad (8 nuevas, 0 resueltas)
+**Trend:** ⬇️ This PR worsens accessibility (8 new, 0 fixed)
 
-**Configuración actual:** WCAG nivel `AA`, impacto máximo `serious`, máximo `5` violaciones nuevas.
-Para ajustar estos umbrales, editá `.a11y-fixer.yml` en la raíz del proyecto.
+**Current config:** WCAG level `AA`, max impact `serious`, max `5` new violations.
+To adjust these thresholds, edit `.a11y-fixer.yml` at the root of the project.
 ```
 
-### Escenario: PR que mejora la accesibilidad
+### Scenario: PR that improves accessibility
 
 ```
-✅ **Accessibility Check: PASSING** — 1 violación nueva (umbral: 5)
+✅ **Accessibility Check: PASSING** — 1 new violation (threshold: 5)
 
-Se encontró 1 violación nueva de accesibilidad, dentro del umbral configurado.
+Found 1 new accessibility violation, within the configured threshold.
 
-**🔵 MINOR** `landmark-one-main` — La página no tiene un elemento `<main>`
+**🔵 MINOR** `landmark-one-main` — Page does not have a `<main>` element
 
-- **Elemento:** `body`
-- **Impacto:** minor
+- **Element:** `body`
+- **Impact:** minor
 - **WCAG:** 1.3.1 — A
-- **Cómo arreglarlo:**
-  > Envolvé el contenido principal en un elemento `<main>`.
+- **How to fix it:**
+  > Wrap the main content in a `<main>` element.
   >
   > ```html
   > <main>
-  >   <!-- contenido principal -->
+  >   <!-- main content -->
   > </main>
   > ```
 
-**Evolución vs main:**
+**Evolution vs main:**
 
-- 🆕 **1 nueva**
-- ✅ **3 resueltas** — violaciones que existían en main y ya no están
-- 🔄 **2 persistentes**
+- 🆕 **1 new**
+- ✅ **3 fixed** — violations that existed in main and are no longer present
+- 🔄 **2 persistent**
 
-**Tendencia:** ⬆️ Este PR mejora la accesibilidad (1 nueva, 3 resueltas)
+**Trend:** ⬆️ This PR improves accessibility (1 new, 3 fixed)
 
-**Configuración actual:** WCAG nivel `AA`, impacto máximo `serious`, máximo `5` violaciones nuevas.
+**Current config:** WCAG level `AA`, max impact `serious`, max `5` new violations.
 ```
 
-### Escenario: PR limpio
+### Scenario: Clean PR
 
 ```
 ✅ **Accessibility Check: PASSING**
 
-No se encontraron violaciones nuevas de accesibilidad en este PR.
+No new accessibility violations found in this PR.
 
-**Evolución vs main:** sin cambios. Se mantiene el estado anterior.
+**Evolution vs main:** no changes. Previous state is maintained.
 ```
 
 ---
 
-## 7. Nota sobre IA (BYOK)
+## 7. Note on AI (BYOK)
 
-Cuando el modo IA está activo, SOLO cambia la sección "Cómo arreglarlo". El resto del comentario (resumen, evolución, configuración) se mantiene igual.
+When AI mode is active, ONLY the "How to fix it" section changes. The rest of the comment (summary, evolution, configuration) stays the same.
 
-Con IA, el "cómo arreglarlo" puede incluir:
-- Explicación más detallada del *por qué* técnico
-- Ejemplos adaptados al stack del proyecto (React, Vue, Angular)
-- Múltiples alternativas de solución
-- Referencia a la documentación oficial de WCAG
+With AI, "How to fix it" can include:
+- More detailed explanation of the *why* behind the rule
+- Examples adapted to the project's stack (React, Vue, Angular)
+- Multiple alternative solutions
+- Links to official WCAG documentation
 
-Sin IA, el "cómo arreglarlo" usa templates curados por el equipo de a11y-fixer.
+Without AI, "How to fix it" uses templates curated by the a11y-fixer team.
