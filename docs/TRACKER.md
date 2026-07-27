@@ -266,6 +266,66 @@
 
 ---
 
+## Phase 2 — Thresholds & Quality
+
+**Goal:** The maintainer can define quality thresholds and the bot blocks PRs that don't meet them.
+
+---
+
+## Epic 2.1 — Threshold Engine
+
+**Goal:** Extract threshold evaluation into a standalone module with proper edge case handling.
+
+### 2.1.1 — Extract threshold engine
+
+- [x] Create `src/thresholds.ts`:
+  - `evaluateThresholds(result, evolution, config): ThresholdResult`
+  - Returns: `{ status: 'passing' | 'warning' | 'failing', reason?: string }`
+  - Logic: if newCount === 0 → passing; if newCount > max_new_violations → failing; else → warning
+- [x] Refactor `comment.ts` to use threshold engine for badge
+
+### 2.1.2 — Wire check status to threshold engine
+
+- [x] `setCheckStatus` uses threshold result
+- [x] Action entry point calls threshold engine before posting
+
+### 2.1.3 — Threshold tests with edge cases
+
+- [x] Test: zero violations → passing
+- [x] Test: violations under threshold → warning
+- [x] Test: violations over threshold → failing
+- [x] Test: exactly at threshold → warning (not failing)
+- [x] Test: max_new_violations = 0 → any new violation is failing
+- [x] Test: max_impact filtering (ignore violations below configured impact)
+- [x] Test: WCAG level filtering (ignore violations above configured level)
+
+**Verification:** `npx vitest run src/thresholds.test.ts` — 8 passed
+
+---
+
+## Epic 2.2 — Ignore Rules
+
+**Goal:** The maintainer can suppress known false positives and skip specific rules or selectors.
+
+### 2.2.1 — Implement ignore rules filtering
+
+- [x] `ignore.rules`: array of axe-core rule IDs to skip entirely
+- [x] `ignore.selectors`: array of CSS selectors to skip
+- [x] Filter in processor.ts before grouping
+- [x] Filter in auditor.ts before returning violations (early skip)
+
+### 2.2.2 — Ignore rules tests
+
+- [x] Test: ignore a specific rule → violations of that rule are removed
+- [x] Test: ignore a selector → violations on that element are removed
+- [x] Test: ignore both rule and selector → both filters applied
+- [x] Test: empty ignore config → no filtering
+- [x] Test: ignore rule that doesn't exist in results → no crash
+
+**Verification:** `npx vitest run src/processor.test.ts` — 22 passed (17 existing + 5 new)
+
+---
+
 ## Progress summary
 
 | Epic | Tasks | Done |
@@ -276,4 +336,6 @@
 | 1.4 Result Processor | 3 tasks | 3/3 |
 | 1.5 PR Comment & Check | 5 tasks | 5/5 |
 | 1.6 Integration Test | 3 tasks | 3/3 |
-| **Total** | **24 tasks** | **24/24** |
+| 2.1 Threshold Engine | 3 tasks | 3/3 |
+| 2.2 Ignore Rules | 2 tasks | 2/2 |
+| **Total** | **29 tasks** | **29/29** |
