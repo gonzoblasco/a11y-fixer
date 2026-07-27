@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple Violations</title>
+  <style>
+    .low-contrast {
+      color: #dddddd;
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <!-- No <main> landmark -->
+  <h2>First section</h2>
+  <p class="low-contrast">This text has poor contrast.</p>
+  <img src="decorative.png" width="100" height="100">
+  <img src="icon.png" width="24" height="24">
+  <button style="background-color: #eeeeee; color: #ffffff;">Click me</button>
+  <!-- No label on input -->
+  <input type="text" placeholder="Search">
+</body>
+</html>
