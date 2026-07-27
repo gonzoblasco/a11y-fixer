@@ -1,63 +1,63 @@
 # a11y-fixer — Brief
 
-> **Estado:** Fase 0.1 (Brainstorming)
-> **Fecha:** 2026-07-27
+> **Status:** Phase 0.1 (Brainstorming)
+> **Date:** 2026-07-27
 
 ---
 
-## El problema
+## The problem
 
-La accesibilidad web en proyectos open source es sistemáticamente neglectada. No porque los devs no quieran hacerla bien, sino porque:
+Web accessibility in open source projects is systematically neglected. Not because devs don't want to do it right, but because:
 
-- Detectar issues de accesibilidad requiere herramientas externas (Lighthouse, axe DevTools, WAVE) que están fuera del flujo natural de desarrollo
-- Saber *cómo* arreglar un issue requiere expertise en WCAG que no todo dev tiene
-- No hay feedback temprano en el ciclo del PR — cuando el código se está revisando y está "caliente"
-- Las herramientas existentes están diseñadas para auditores de accesibilidad, no para devs en su día a día
-- No hay forma de trackear la *evolución* de la accesibilidad de un proyecto a lo largo del tiempo
+- Detecting accessibility issues requires external tools (Lighthouse, axe DevTools, WAVE) that live outside the natural development flow
+- Knowing *how* to fix an issue requires WCAG expertise that not every dev has
+- There's no early feedback in the PR cycle — when the code is being reviewed and is "hot"
+- Existing tools are designed for accessibility auditors, not for devs in their daily workflow
+- There's no way to track the *evolution* of a project's accessibility over time
 
-## La visión
+## The vision
 
-Una **GitHub Action / bot** que se engancha en los PRs, corre una auditoría automatizada de accesibilidad, y comenta con:
+A **GitHub Action / bot** that hooks into PRs, runs automated accessibility audits, and comments with:
 
-- **Qué** violaciones encontró (y contra qué regla WCAG)
-- **Cómo** arreglarlo (con ejemplos de código concretos)
-- **Evolución** vs la rama base: "este PR mejora/empeora la accesibilidad"
-- **Meta**: ayudar al PR a pasar un umbral de calidad accesible
+- **What** violations it found (and which WCAG rule they break)
+- **How** to fix them (with concrete code examples)
+- **Evolution** vs the base branch: "this PR improves/worsens accessibility"
+- **Goal**: help the PR pass a quality accessibility threshold
 
-## Para quién
+## For whom
 
-- **Devs open source** que quieren que sus proyectos sean accesibles pero no tienen expertise en a11y
-- **Mantenedores** que quieren establecer un estándar de accesibilidad en sus repos
-- **Organizaciones** que usan GitHub y necesitan garantizar cumplimiento WCAG sin depender de auditorías manuales
+- **Open source devs** who want their projects to be accessible but don't have a11y expertise
+- **Maintainers** who want to set an accessibility standard across their repos
+- **Organizations** using GitHub that need WCAG compliance without relying on manual audits
 
-## Qué NO es
+## What it is NOT
 
-- No es un dashboard / SaaS / plataforma web
-- No es un CLI para correr localmente (aunque podría tenerlo como extra)
-- No es un reemplazo de auditoría humana experta
-- No es una herramienta que pretenda "arreglar todo automágicamente"
+- Not a dashboard / SaaS / web platform
+- Not a CLI to run locally (though it could have one as an extra)
+- Not a replacement for expert human audit
+- Not a tool that claims to "fix everything automagically"
 
-## Diferenciación
+## Differentiation
 
-| Herramienta | Enfoque | a11y-fixer |
+| Tool | Approach | a11y-fixer |
 |---|---|---|
-| Lighthouse | Reporte estático | Feedback en PRs |
-| axe DevTools | Auditoría manual | Automatizado en CI |
-| Pa11y CI | Umbral de errores | Explicación + cómo arreglar |
-| AccessLint | Comentarios en PRs | Evolución + ejemplos de código |
+| Lighthouse | Static report | Feedback in PRs |
+| axe DevTools | Manual audit | Automated in CI |
+| Pa11y CI | Error threshold | Explanation + how to fix |
+| AccessLint | PR comments | Evolution + code examples |
 | Deque Axe | SaaS enterprise | Open source + BYOK |
 
-## Stack asumido
+## Assumed stack
 
-- GitHub Actions + GitHub Apps (para engancharse en PRs)
-- axe-core como motor de auditoría (estándar de la industria)
-- TypeScript (el nicho de Gonzo)
-- Open source, licencia MIT
-- IA opcional con BYOK (para explicar cómo arreglar los issues)
+- GitHub Actions + GitHub Apps (to hook into PRs)
+- axe-core as audit engine (industry standard)
+- TypeScript (Gonzo's stack)
+- Open source, MIT license
+- Optional AI with BYOK (to explain how to fix issues)
 
-## Preguntas abiertas
+## Open questions
 
-- ¿Soporte solo para web, o también para React Native / mobile?
-- ¿Qué tan profundo debe ser el análisis de "evolución"? (diff de violaciones entre ramas)
-- ¿Debe tener un modo "suggest changes" que proponga el fix directamente en el PR?
-- ¿CLI standalone o solo GitHub Action?
+- Web only, or React Native / mobile too?
+- How deep should the "evolution" analysis be? (diff of violations between branches)
+- Should it have a "suggest changes" mode that proposes the fix directly in the PR?
+- CLI standalone or just GitHub Action?
