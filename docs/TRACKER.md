@@ -326,6 +326,60 @@
 
 ---
 
+## Phase 3 — AI Explainer (BYOK)
+
+**Goal:** Optional AI mode that generates detailed explanations and contextualized code examples for accessibility violations.
+
+---
+
+## Epic 3.1 — AI Integration
+
+**Goal:** Provider abstraction for OpenAI, Anthropic, and OpenRouter with graceful fallback to templates.
+
+### 3.1.1 — Implement ai-explainer.ts
+
+- [x] Provider abstraction: `AiProvider` interface with `generateExplanation(prompt, apiKey, model)`
+- [x] OpenAI provider: `https://api.openai.com/v1/chat/completions`
+- [x] Anthropic provider: `https://api.anthropic.com/v1/messages`
+- [x] OpenRouter provider: `https://openrouter.ai/api/v1/chat/completions`
+- [x] `buildPrompt(violation)` — constructs prompt from violation details
+- [x] `getApiKey(provider)` — reads from `{PROVIDER}_API_KEY` or `AI_API_KEY` env vars
+
+### 3.1.2 — Prompt engineering
+
+- [x] System prompt: accessibility expert role with WCAG knowledge
+- [x] User prompt: violation details (rule, impact, element, HTML, failure summary)
+- [x] Output: contextualized explanation with code example
+
+### 3.1.3 — Fallback to templates
+
+- [x] If `ai.enabled` is false → template
+- [x] If no API key configured → template
+- [x] If API call fails (timeout, rate limit, network) → template
+- [x] If API returns invalid/empty response → template
+
+### 3.1.4 — Tests with API mocks
+
+- [x] Test: AI disabled → template
+- [x] Test: no API key → template
+- [x] Test: API success → AI explanation
+- [x] Test: API network failure → fallback to template
+- [x] Test: API non-ok status → fallback to template
+- [x] Test: API empty response → fallback to template
+- [x] Test: Anthropic provider
+- [x] Test: OpenRouter provider
+- [x] Test: unknown provider → template
+- [x] Test: `AI_API_KEY` fallback env var
+
+### 3.1.5 — Wire AI explainer into pipeline
+
+- [ ] Entry point calls `generateAiExplanation()` for each violation when `ai.enabled === true`
+- [ ] Comment shows "AI-powered explanation" badge when AI is used
+
+**Verification:** `npx vitest run src/ai-explainer.test.ts` — 10 passed
+
+---
+
 ## Progress summary
 
 | Epic | Tasks | Done |
@@ -338,4 +392,5 @@
 | 1.6 Integration Test | 3 tasks | 3/3 |
 | 2.1 Threshold Engine | 3 tasks | 3/3 |
 | 2.2 Ignore Rules | 2 tasks | 2/2 |
-| **Total** | **29 tasks** | **29/29** |
+| 3.1 AI Explainer (BYOK) | 5 tasks | 4/5 |
+| **Total** | **34 tasks** | **33/34** |
