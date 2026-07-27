@@ -1,6 +1,6 @@
 import type { Config } from './config.schema.js';
-import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 import { evaluateThresholds } from './thresholds.js';
+import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 
 /**
  * Generate a structured PR comment following the DESIGN.md format.

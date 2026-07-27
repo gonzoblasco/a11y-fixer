@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { evaluateThresholds } from './thresholds.js';
-import type { ProcessedResult, ProcessedViolation, EvolutionResult } from './types.js';
+import { describe, expect, it } from 'vitest';
 import type { Config } from './config.schema.js';
+import { evaluateThresholds } from './thresholds.js';
+import type { EvolutionResult, ProcessedResult, ProcessedViolation } from './types.js';
 
 const defaultConfig: Config = {
   level: 'AA',
@@ -11,7 +11,7 @@ const defaultConfig: Config = {
   ai: { enabled: false },
 };
 
-function makeViolation(rule: string, selectors: string[], impact: string = 'serious'): ProcessedViolation {
+function makeViolation(rule: string, selectors: string[], impact = 'serious'): ProcessedViolation {
   return {
     rule,
     impact: impact as ProcessedViolation['impact'],

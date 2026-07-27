@@ -1,5 +1,5 @@
-import type { ProcessedResult, ProcessedViolation, Violation } from './types.js';
 import type { Config } from './config.schema.js';
+import type { ProcessedResult, ProcessedViolation, Violation } from './types.js';
 
 const IMPACT_ORDER: Record<string, number> = {
   critical: 0,
