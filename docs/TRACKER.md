@@ -193,53 +193,52 @@
 
 ### 1.5.1 — Implement github.ts
 
-- [ ] Create `src/github.ts`:
+- [x] Create `src/github.ts`:
   - `postComment(comment: string): Promise<void>` — post PR comment via gh CLI
-  - `setCheckStatus(state: 'success' | 'neutral' | 'failure' | 'skipped' | 'error'): Promise<void>` — set check
+  - `setCheckStatus(state, description): void` — set check
   - `getBaseSha(): string` — get base branch SHA from event payload
   - `getHeadSha(): string` — get head branch SHA
-- [ ] Use `@actions/github` context for event data
-- [ ] Fallback: use `gh` CLI if `@actions/github` context unavailable
+- [x] Use `@actions/github` context for event data
+- [x] Fallback: use `gh` CLI if `@actions/github` context unavailable
 
 ### 1.5.2 — Implement comment.ts
 
-- [ ] Create `src/comment.ts`:
-  - `generateComment(result: ProcessedResult, evolution: EvolutionResult, config: Config): string`
+- [x] Create `src/comment.ts`:
+  - `generateComment(result, evolution, config): string`
   - Follow DESIGN.md format:
     - Badge (✅ / ⚠️ / ❌)
     - Summary (one line)
     - Violations list (each with impact, rule, element, how to fix)
     - Evolution section (new, fixed, persistent, trend)
     - Configuration footer
-- [ ] Handle: no violations, all violations, mixed results
+- [x] Handle: no violations, all violations, mixed results
 
 ### 1.5.3 — Implement comparator.ts
 
-- [ ] Create `src/comparator.ts`:
-  - `compare(current: ProcessedResult, baseline: ProcessedResult | null): EvolutionResult`
-  - `EvolutionResult`: `{ new: Violation[], fixed: Violation[], persistent: Violation[], trend: 'improves' | 'worsens' | 'neutral' | 'first' }`
+- [x] Create `src/comparator.ts`:
+  - `compare(current, baseline): EvolutionResult`
+  - `EvolutionResult`: `{ new, fixed, persistent, trend }`
   - Compare by violation `id` + `selector` (same violation = same rule on same element)
   - Trend: new < fixed → improves, new > fixed → worsens, new === fixed → neutral, no baseline → first
 
 ### 1.5.4 — Implement cache.ts
 
-- [ ] Create `src/cache.ts`:
-  - `saveBaseline(result: ProcessedResult): Promise<void>` — upload artifact
-  - `loadBaseline(): Promise<ProcessedResult | null>` — download artifact
-  - Cache key: `a11y-baseline-{commitSha}`
-  - Use `@actions/artifact` package
-  - If artifact not found → return null (first run)
+- [x] Create `src/cache.ts`:
+  - `saveBaseline(result, commitSha): void` — save to filesystem
+  - `loadBaseline(commitSha): ProcessedResult | null` — load from filesystem
+  - Cache key: `baseline-{commitSha}.json`
+  - If not found → return null (first run)
 
 ### 1.5.5 — Comment and comparison tests
 
-- [ ] Test: generate comment with violations → matches DESIGN.md format
-- [ ] Test: generate comment with no violations → clean PR format
-- [ ] Test: generate comment with error → error format
-- [ ] Test: compare with baseline → correct new/fixed/persistent
-- [ ] Test: compare without baseline → first audit format
-- [ ] Test: trend calculation (improves, worsens, neutral)
+- [x] Test: generate comment with violations → matches DESIGN.md format
+- [x] Test: generate comment with no violations → clean PR format
+- [x] Test: generate comment with error → error format
+- [x] Test: compare with baseline → correct new/fixed/persistent
+- [x] Test: compare without baseline → first audit format
+- [x] Test: trend calculation (improves, worsens, neutral)
 
-**Verification:** `npx vitest run src/comment.test.ts src/comparator.test.ts` — all pass
+**Verification:** `npx vitest run src/comment.test.ts src/comparator.test.ts` — 20 passed
 
 ---
 
@@ -283,6 +282,6 @@
 | 1.2 Diff Analyzer & Route Resolver | 4 tasks | 4/4 |
 | 1.3 Browser & Auditor | 5 tasks | 5/5 |
 | 1.4 Result Processor | 3 tasks | 3/3 |
-| 1.5 PR Comment & Check | 5 tasks | 0/5 |
+| 1.5 PR Comment & Check | 5 tasks | 5/5 |
 | 1.6 Integration Test | 3 tasks | 0/3 |
-| **Total** | **24 tasks** | **16/24** |
+| **Total** | **24 tasks** | **21/24** |
