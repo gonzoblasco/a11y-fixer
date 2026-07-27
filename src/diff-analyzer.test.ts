@@ -7,11 +7,17 @@ const HEAD_SHA = execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
 // Get the initial commit SHA
 const FIRST_SHA = execSync('git rev-list --max-parents=0 HEAD', { encoding: 'utf-8' }).trim();
 
+// In CI with shallow clones, FIRST_SHA may equal HEAD_SHA (single commit)
+const isSingleCommit = FIRST_SHA === HEAD_SHA;
+
 describe('getChangedFiles', () => {
   it('returns an array of changed files between two SHAs', () => {
     const files = getChangedFiles(FIRST_SHA, HEAD_SHA);
     expect(Array.isArray(files)).toBe(true);
-    expect(files.length).toBeGreaterThan(0);
+    // In a single-commit repo (shallow CI clone), the diff is empty
+    if (!isSingleCommit) {
+      expect(files.length).toBeGreaterThan(0);
+    }
     expect(files.every((f) => typeof f === 'string' && f.length > 0)).toBe(true);
   });
 
