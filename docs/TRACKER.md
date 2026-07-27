@@ -149,104 +149,6 @@
 
 ---
 
-## Epic 1.2 — Diff Analyzer & Route Resolver
-
-**Goal:** Given a git diff, determine which routes to scan.
-
-### 1.2.1 — Implement diff-analyzer.ts
-
-- [ ] Create `src/diff-analyzer.ts`:
-  - `getChangedFiles(baseSha: string, headSha: string): string[]`
-  - Runs `git diff --name-only` between two SHAs
-  - Returns list of changed file paths
-- [ ] Handle: empty diff, binary files, deleted files
-
-### 1.2.2 — Implement route-resolver.ts
-
-- [ ] Create `src/route-resolver.ts`:
-  - `resolveRoutes(config: Config, changedFiles: string[]): string[]`
-  - Always includes `config.routes.core`
-  - Detects routes from changed files (Next.js App Router: `page.tsx`, `route.tsx`)
-  - Deduplicates
-  - Returns sorted unique routes
-
-### 1.2.3 — Next.js App Router detection
-
-- [ ] Map file paths to URL routes:
-  - `src/app/page.tsx` → `/`
-  - `src/app/dashboard/page.tsx` → `/dashboard`
-  - `src/app/projects/[id]/page.tsx` → `/projects/:id` (skip dynamic params)
-  - `src/app/api/...` → skip (API routes, not pages)
-- [ ] Handle: group routes, layout files (skip), loading files (skip)
-
-### 1.2.4 — Route resolution tests
-
-- [ ] Test: core routes only (no changed files)
-- [ ] Test: core + detected routes (with dedup)
-- [ ] Test: no page files changed → only core routes
-- [ ] Test: dynamic route detected → included
-- [ ] Test: API route changed → excluded
-- [ ] Test: empty changed files → core routes only
-
-**Verification:** `npx vitest run src/route-resolver.test.ts` — all pass
-
----
-
-## Epic 1.3 — Browser & Auditor
-
-**Goal:** Launch Playwright, navigate to routes, run axe-core, collect violations.
-
-### 1.3.1 — Implement browser.ts
-
-- [ ] Create `src/browser.ts`:
-  - `createBrowser(): Promise<Browser>` — launch Chromium headless
-  - `createPage(browser: Browser): Promise<Page>` — new page with sensible defaults
-  - `navigateToRoute(page: Page, url: string): Promise<void>` — navigate, wait for load
-  - `closeBrowser(browser: Browser): Promise<void>` — cleanup
-- [ ] Configure: `headless: true`, viewport 1280x720, no sandbox for CI
-- [ ] Error handling: timeout, navigation failure, browser crash
-
-### 1.3.2 — Implement auditor.ts
-
-- [ ] Create `src/auditor.ts`:
-  - `runAudit(page: Page): Promise<Violation[]>`
-  - Inject axe-core source into page
-  - Run `axe.run()` with configured level/impact
-  - Return structured violations
-- [ ] Each violation includes: `id`, `impact`, `description`, `help`, `helpUrl`, `nodes[]` with `selector`, `html`, `failureSummary`
-
-### 1.3.3 — Authenticated route handling
-
-- [ ] Before navigating to authenticated routes:
-  - If `auth.type === 'cookie'`: set cookie on page context
-  - If `auth.type === 'header'`: set extra HTTP headers
-  - If `auth.type === 'token'`: set Authorization header
-- [ ] Verify page loaded (not redirected to login)
-
-### 1.3.4 — Timeout + error handling
-
-- [ ] Configurable timeout per route (default: 30s)
-- [ ] On timeout: log warning, skip route, continue
-- [ ] On navigation error: log error, skip route, continue
-- [ ] On axe-core error: log error, skip route, continue
-- [ ] Never crash the whole audit for one bad route
-
-### 1.3.5 — Audit tests with HTML fixtures
-
-- [ ] Create `tests/fixtures/` with HTML files:
-  - `good.html` — no violations
-  - `bad-contrast.html` — color contrast violation
-  - `missing-alt.html` — missing alt text
-  - `multiple-violations.html` — 3+ violations of different types
-- [ ] Test: good page → 0 violations
-- [ ] Test: bad contrast → 1+ violations of type `color-contrast`
-- [ ] Test: missing alt → 1+ violations of type `image-alt`
-- [ ] Test: multiple violations → correct count and types
-
-**Verification:** `npx vitest run src/auditor.test.ts` — all pass
-
----
-
 ## Epic 1.4 — Result Processor
 
 **Goal:** Raw axe-core violations → structured, grouped, with suggested fixes.
@@ -377,10 +279,10 @@
 
 | Epic | Tasks | Done |
 |---|---|---|
-| 1.1 Config & Bootstrap | 4 tasks, 11 subtasks | 0/11 |
-| 1.2 Diff Analyzer & Route Resolver | 4 tasks, 14 subtasks | 0/14 |
-| 1.3 Browser & Auditor | 5 tasks, 18 subtasks | 0/18 |
-| 1.4 Result Processor | 3 tasks, 10 subtasks | 0/10 |
-| 1.5 PR Comment & Check | 5 tasks, 15 subtasks | 0/15 |
-| 1.6 Integration Test | 3 tasks, 9 subtasks | 0/9 |
-| **Total** | **24 tasks** | **0/77** |
+| 1.1 Config & Bootstrap | 4 tasks | 4/4 |
+| 1.2 Diff Analyzer & Route Resolver | 4 tasks | 4/4 |
+| 1.3 Browser & Auditor | 5 tasks | 0/5 |
+| 1.4 Result Processor | 3 tasks | 0/3 |
+| 1.5 PR Comment & Check | 5 tasks | 0/5 |
+| 1.6 Integration Test | 3 tasks | 0/3 |
+| **Total** | **24 tasks** | **8/24** |
