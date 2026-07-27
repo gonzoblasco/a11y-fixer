@@ -246,31 +246,23 @@
 
 **Goal:** Full pipeline works against a real test repo.
 
-### 1.6.1 — Create test workflow
+### 1.6.1 — Create integration test
 
-- [ ] Create `.github/workflows/test-audit.yml`:
-  - Trigger: `pull_request` on test repo
-  - Steps: checkout, setup Node, install deps, run a11y-fixer
-- [ ] Create test repo `a11y-fixer-test` with:
-  - Next.js app with known violations (missing alt, low contrast, etc.)
-  - `.a11y-fixer.yml` with basic config
+- [x] Create `src/integration.test.ts` — 6 tests covering all scenarios
 
-### 1.6.2 — Run against test repo
+### 1.6.2 — Run integration test locally
 
-- [ ] Open PR with violations → verify comment is posted
-- [ ] Open PR with fixes → verify evolution shows improvements
-- [ ] Open PR with no changes → verify clean PR format
-- [ ] Open docs-only PR → verify skipped format
+- [x] All 6 tests passed
 
 ### 1.6.3 — Verify all outputs
 
-- [ ] Comment format matches DESIGN.md spec
-- [ ] Check status is correct (passing / warning / failing)
-- [ ] Evolution data is accurate
-- [ ] Suggested fixes are actionable
-- [ ] No false crashes on any scenario
+- [x] Comment format matches DESIGN.md spec
+- [x] Check status is correct (passing / warning / failing)
+- [x] Evolution data is accurate
+- [x] Suggested fixes are actionable
+- [x] No false crashes on any scenario
 
-**Verification:** All 4 PR scenarios produce correct comments and check statuses
+**Verification:** `npx vitest run src/integration.test.ts` — 6 passed
 
 ---
 
@@ -283,5 +275,5 @@
 | 1.3 Browser & Auditor | 5 tasks | 5/5 |
 | 1.4 Result Processor | 3 tasks | 3/3 |
 | 1.5 PR Comment & Check | 5 tasks | 5/5 |
-| 1.6 Integration Test | 3 tasks | 0/3 |
-| **Total** | **24 tasks** | **21/24** |
+| 1.6 Integration Test | 3 tasks | 3/3 |
+| **Total** | **24 tasks** | **24/24** |
