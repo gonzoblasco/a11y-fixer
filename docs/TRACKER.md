@@ -100,22 +100,22 @@
 
 ### 1.3.1 — Implement browser.ts
 
-- [ ] Create `src/browser.ts`:
+- [x] Create `src/browser.ts`:
   - `createBrowser(): Promise<Browser>` — launch Chromium headless
   - `createPage(browser: Browser): Promise<Page>` — new page with sensible defaults
   - `navigateToRoute(page: Page, url: string): Promise<void>` — navigate, wait for load
   - `closeBrowser(browser: Browser): Promise<void>` — cleanup
-- [ ] Configure: `headless: true`, viewport 1280x720, no sandbox for CI
-- [ ] Error handling: timeout, navigation failure, browser crash
+- [x] Configure: `headless: true`, viewport 1280x720, no sandbox for CI
+- [x] Error handling: timeout, navigation failure, browser crash
 
 ### 1.3.2 — Implement auditor.ts
 
-- [ ] Create `src/auditor.ts`:
+- [x] Create `src/auditor.ts`:
   - `runAudit(page: Page): Promise<Violation[]>`
   - Inject axe-core source into page
   - Run `axe.run()` with configured level/impact
   - Return structured violations
-- [ ] Each violation includes: `id`, `impact`, `description`, `help`, `helpUrl`, `nodes[]` with `selector`, `html`, `failureSummary`
+- [x] Each violation includes: `id`, `impact`, `description`, `help`, `helpUrl`, `nodes[]` with `selector`, `html`, `failureSummary`
 
 ### 1.3.3 — Authenticated route handling
 
@@ -127,25 +127,25 @@
 
 ### 1.3.4 — Timeout + error handling
 
-- [ ] Configurable timeout per route (default: 30s)
-- [ ] On timeout: log warning, skip route, continue
-- [ ] On navigation error: log error, skip route, continue
-- [ ] On axe-core error: log error, skip route, continue
-- [ ] Never crash the whole audit for one bad route
+- [x] Configurable timeout per route (default: 30s)
+- [x] On timeout: log warning, skip route, continue
+- [x] On navigation error: log error, skip route, continue
+- [x] On axe-core error: log error, skip route, continue
+- [x] Never crash the whole audit for one bad route
 
 ### 1.3.5 — Audit tests with HTML fixtures
 
-- [ ] Create `tests/fixtures/` with HTML files:
+- [x] Create `tests/fixtures/` with HTML files:
   - `good.html` — no violations
   - `bad-contrast.html` — color contrast violation
   - `missing-alt.html` — missing alt text
   - `multiple-violations.html` — 3+ violations of different types
-- [ ] Test: good page → 0 violations
-- [ ] Test: bad contrast → 1+ violations of type `color-contrast`
-- [ ] Test: missing alt → 1+ violations of type `image-alt`
-- [ ] Test: multiple violations → correct count and types
+- [x] Test: good page → 0 violations
+- [x] Test: bad contrast → 1+ violations of type `color-contrast`
+- [x] Test: missing alt → 1+ violations of type `image-alt`
+- [x] Test: multiple violations → correct count and types
 
-**Verification:** `npx vitest run src/auditor.test.ts` — all pass
+**Verification:** `npx vitest run src/auditor.test.ts` — 5 passed
 
 ---
 
@@ -281,7 +281,7 @@
 |---|---|---|
 | 1.1 Config & Bootstrap | 4 tasks | 4/4 |
 | 1.2 Diff Analyzer & Route Resolver | 4 tasks | 4/4 |
-| 1.3 Browser & Auditor | 5 tasks | 0/5 |
+| 1.3 Browser & Auditor | 5 tasks | 4/5 |
 | 1.4 Result Processor | 3 tasks | 0/3 |
 | 1.5 PR Comment & Check | 5 tasks | 0/5 |
 | 1.6 Integration Test | 3 tasks | 0/3 |
