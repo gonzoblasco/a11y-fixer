@@ -1,114 +1,114 @@
 # a11y-fixer — Roadmap
 
-> **Estado:** Fase 0.2 (Planificación)
-> **Fecha:** 2026-07-27
-> **Versión objetivo:** 1.0.0
+> **Status:** Phase 0.2 (Planning)
+> **Date:** 2026-07-27
+> **Target version:** 1.0.0
 
 ---
 
-## 🟢 Fase 1: Core Engine (MVP)
+## 🟢 Phase 1: Core Engine (MVP)
 
-**Objetivo:** El bot puede escanear un PR, detectar violaciones de accesibilidad, y comentar en el PR con resultados.
+**Goal:** The bot can scan a PR, detect accessibility violations, and comment on the PR with results.
 
 ### Epic 1.1 — Config & Bootstrap
-- [ ] **1.1.1** Inicializar proyecto Node.js + TypeScript + Biome + Vitest
-- [ ] **1.1.2** Crear `action.yml` con metadata de GitHub Action
-- [ ] **1.1.3** Implementar `config.ts`: loader + Zod schema de `.a11y-fixer.yml`
-- [ ] **1.1.4** Tests de validación de config (casos válidos, inválidos, defaults)
+- [ ] **1.1.1** Initialize Node.js + TypeScript + Biome + Vitest project
+- [ ] **1.1.2** Create `action.yml` with GitHub Action metadata
+- [ ] **1.1.3** Implement `config.ts`: loader + Zod schema for `.a11y-fixer.yml`
+- [ ] **1.1.4** Config validation tests (valid, invalid, defaults)
 
 ### Epic 1.2 — Diff Analyzer & Route Resolver
-- [ ] **1.2.1** Implementar `diff-analyzer.ts`: extraer archivos modificados del git diff
-- [ ] **1.2.2** Implementar `route-resolver.ts`: combinar core routes + detected routes del diff
-- [ ] **1.2.3** Soporte inicial para Next.js App Router (detectar `page.tsx` en el diff)
-- [ ] **1.2.4** Tests de resolución de rutas (varios escenarios de diff)
+- [ ] **1.2.1** Implement `diff-analyzer.ts`: extract modified files from git diff
+- [ ] **1.2.2** Implement `route-resolver.ts`: combine core routes + detected routes from diff
+- [ ] **1.2.3** Initial Next.js App Router support (detect `page.tsx` in diff)
+- [ ] **1.2.4** Route resolution tests (various diff scenarios)
 
 ### Epic 1.3 — Browser & Auditor
-- [ ] **1.3.1** Implementar `browser.ts`: Playwright launcher con pool de páginas
-- [ ] **1.3.2** Implementar `auditor.ts`: inyectar axe-core, correr auditoría, recolectar resultados
-- [ ] **1.3.3** Manejo de rutas autenticadas (inyectar cookie/header desde secrets)
-- [ ] **1.3.4** Timeout configurable por ruta + error handling
-- [ ] **1.3.5** Tests de auditoría con fixtures HTML
+- [ ] **1.3.1** Implement `browser.ts`: Playwright launcher with page pool
+- [ ] **1.3.2** Implement `auditor.ts`: inject axe-core, run audit, collect results
+- [ ] **1.3.3** Authenticated route handling (inject cookie/header from secrets)
+- [ ] **1.3.4** Configurable per-route timeout + error handling
+- [ ] **1.3.5** Audit tests with HTML fixtures
 
 ### Epic 1.4 — Result Processor
-- [ ] **1.4.1** Implementar `processor.ts`: raw violations → estructura por regla WCAG, impacto, selector
-- [ ] **1.4.2** Generar suggested fix template-based para violaciones comunes
-- [ ] **1.4.3** Tests de procesamiento con datos de axe-core reales
+- [ ] **1.4.1** Implement `processor.ts`: raw violations → structured by WCAG rule, impact, selector
+- [ ] **1.4.2** Generate template-based suggested fixes for common violations
+- [ ] **1.4.3** Processing tests with real axe-core data
 
 ### Epic 1.5 — PR Comment & Check
-- [ ] **1.5.1** Implementar `github.ts`: wrappers para gh CLI (comentar, setear check status)
-- [ ] **1.5.2** Implementar `comment.ts`: generador de markdown estructurado
-- [ ] **1.5.3** Implementar `comparator.ts`: current vs baseline (violaciones nuevas, resueltas, persistentes)
-- [ ] **1.5.4** Implementar `cache.ts`: subir/bajar artifacts de GitHub Actions
-- [ ] **1.5.5** Tests de generación de comentarios y comparación
+- [ ] **1.5.1** Implement `github.ts`: wrappers for gh CLI (comment, set check status)
+- [ ] **1.5.2** Implement `comment.ts`: structured markdown generator
+- [ ] **1.5.3** Implement `comparator.ts`: current vs baseline (new, fixed, persistent violations)
+- [ ] **1.5.4** Implement `cache.ts`: upload/download GitHub Actions artifacts
+- [ ] **1.5.5** Comment and comparison tests
 
 ### Epic 1.6 — Integration Test (end-to-end)
-- [ ] **1.6.1** Crear workflow de GitHub Actions de prueba
-- [ ] **1.6.2** Probar contra un repo de prueba con violaciones conocidas
-- [ ] **1.6.3** Verificar comentario en PR, check status, evolución
+- [ ] **1.6.1** Create test GitHub Actions workflow
+- [ ] **1.6.2** Test against a test repo with known violations
+- [ ] **1.6.3** Verify PR comment, check status, evolution
 
 ---
 
-## ⚪ Fase 2: Thresholds & Quality
+## ⚪ Phase 2: Thresholds & Quality
 
-**Objetivo:** El mantenedor puede definir umbrales de calidad y el bot bloquea PRs que no los cumplen.
+**Goal:** The maintainer can define quality thresholds and the bot blocks PRs that don't meet them.
 
 ### Epic 2.1 — Threshold Engine
-- [ ] **2.1.1** Implementar evaluación de umbrales (nivel WCAG, impacto, cantidad)
-- [ ] **2.1.2** Check status dinámico: ✅ passing / ⚠️ warning / ❌ failing
-- [ ] **2.1.3** Tests de threshold con casos límite
+- [ ] **2.1.1** Implement threshold evaluation (WCAG level, impact, count)
+- [ ] **2.1.2** Dynamic check status: ✅ passing / ⚠️ warning / ❌ failing
+- [ ] **2.1.3** Threshold tests with edge cases
 
 ### Epic 2.2 — Ignore Rules
-- [ ] **2.2.1** Implementar `ignore.rules` y `ignore.selectors` en config
-- [ ] **2.2.2** Tests de filtrado de falsos positivos
+- [ ] **2.2.1** Implement `ignore.rules` and `ignore.selectors` in config
+- [ ] **2.2.2** False positive filtering tests
 
 ---
 
-## ⚪ Fase 3: AI Explainer (BYOK)
+## ⚪ Phase 3: AI Explainer (BYOK)
 
-**Objetivo:** Modo opcional con IA que genera explicaciones detalladas y ejemplos de código contextualizados.
+**Goal:** Optional AI mode that generates detailed explanations and contextualized code examples.
 
 ### Epic 3.1 — AI Integration
-- [ ] **3.1.1** Implementar `ai-explainer.ts`: provider abstraction (OpenAI, Anthropic)
-- [ ] **3.1.2** Prompt engineering para explicaciones de accesibilidad
-- [ ] **3.1.3** Fallback a templates si no hay API key o falla la llamada
-- [ ] **3.1.4** Tests con mocks de API
+- [ ] **3.1.1** Implement `ai-explainer.ts`: provider abstraction (OpenAI, Anthropic)
+- [ ] **3.1.2** Prompt engineering for accessibility explanations
+- [ ] **3.1.3** Fallback to templates if no API key or call fails
+- [ ] **3.1.4** Tests with API mocks
 
 ---
 
-## ⚪ Fase 4: Distribution & Docs
+## ⚪ Phase 4: Distribution & Docs
 
-**Objetivo:** Publicar en GitHub Marketplace, documentación completa, ejemplos.
+**Goal:** Publish on GitHub Marketplace, complete documentation, examples.
 
 ### Epic 4.1 — GitHub Marketplace
-- [ ] **4.1.1** Crear README.md con badges, ejemplos, configuración
-- [ ] **4.1.2** Publicar action en GitHub Marketplace
-- [ ] **4.1.3** Crear template de `.a11y-fixer.yml` para quickstart
+- [ ] **4.1.1** Create README.md with badges, examples, configuration
+- [ ] **4.1.2** Publish action on GitHub Marketplace
+- [ ] **4.1.3** Create `.a11y-fixer.yml` quickstart template
 
 ### Epic 4.2 — Documentation
-- [ ] **4.2.1** Documentación de todas las opciones de configuración
-- [ ] **4.2.2** Guía de contribución
-- [ ] **4.2.3** Ejemplos para frameworks populares (Next.js, React, Vue, Angular)
+- [ ] **4.2.1** Documentation for all configuration options
+- [ ] **4.2.2** Contribution guide
+- [ ] **4.2.3** Examples for popular frameworks (Next.js, React, Vue, Angular)
 
 ---
 
-## ⚪ Fase 5: Post-MVP
+## ⚪ Phase 5: Post-MVP
 
-**Objetivo:** Features adicionales que expanden el alcance.
+**Goal:** Additional features that expand the scope.
 
-- [ ] **5.1** Suggest changes: propuesta de fix como suggestion en el PR
-- [ ] **5.2** CLI standalone para correr localmente
-- [ ] **5.3** Dashboard histórico (GitHub Pages con los artifacts)
-- [ ] **5.4** Soporte para React Native (mobile)
-- [ ] **5.5** Integración con sistemas de diseño (detectar patrones de componentes)
-- [ ] **5.6** Soporte para más frameworks en route resolver
+- [ ] **5.1** Suggest changes: propose fix as PR suggestion
+- [ ] **5.2** CLI standalone to run locally
+- [ ] **5.3** Historical dashboard (GitHub Pages with artifacts)
+- [ ] **5.4** React Native support (mobile)
+- [ ] **5.5** Design system integration (detect component patterns)
+- [ ] **5.6** More framework support in route resolver
 
 ---
 
-## Hitos
+## Milestones
 
-| Hito | Fecha estimada | Entregable |
+| Milestone | Estimated date | Deliverable |
 |---|---|---|
-| MVP funcional | — | Action que escanea y comenta en PRs |
-| Thresholds | — | Umbrales configurables, check status |
-| AI Explainer | — | Explicaciones con IA (BYOK) |
-| v1.0.0 | — | Publicado en GitHub Marketplace |
+| Functional MVP | — | Action that scans and comments on PRs |
+| Thresholds | — | Configurable thresholds, check status |
+| AI Explainer | — | AI explanations (BYOK) |
+| v1.0.0 | — | Published on GitHub Marketplace |
