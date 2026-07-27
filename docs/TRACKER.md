@@ -119,11 +119,11 @@
 
 ### 1.3.3 — Authenticated route handling
 
-- [ ] Before navigating to authenticated routes:
+- [x] Before navigating to authenticated routes:
   - If `auth.type === 'cookie'`: set cookie on page context
   - If `auth.type === 'header'`: set extra HTTP headers
   - If `auth.type === 'token'`: set Authorization header
-- [ ] Verify page loaded (not redirected to login)
+- [x] Verify page loaded (not redirected to login)
 
 ### 1.3.4 — Timeout + error handling
 
@@ -281,8 +281,8 @@
 |---|---|---|
 | 1.1 Config & Bootstrap | 4 tasks | 4/4 |
 | 1.2 Diff Analyzer & Route Resolver | 4 tasks | 4/4 |
-| 1.3 Browser & Auditor | 5 tasks | 4/5 |
+| 1.3 Browser & Auditor | 5 tasks | 5/5 |
 | 1.4 Result Processor | 3 tasks | 0/3 |
 | 1.5 PR Comment & Check | 5 tasks | 0/5 |
 | 1.6 Integration Test | 3 tasks | 0/3 |
-| **Total** | **24 tasks** | **8/24** |
+| **Total** | **24 tasks** | **13/24** |
