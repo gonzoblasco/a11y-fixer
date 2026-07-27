@@ -155,7 +155,7 @@
 
 ### 1.4.1 — Implement processor.ts
 
-- [ ] Create `src/processor.ts`:
+- [x] Create `src/processor.ts`:
   - `processViolations(raw: Violation[]): ProcessedResult`
   - Group violations by WCAG rule
   - Sort by impact (critical → minor)
@@ -163,7 +163,7 @@
 
 ### 1.4.2 — Template-based suggested fixes
 
-- [ ] Create fix templates for common violations:
+- [x] Create fix templates for common violations:
   - `color-contrast`: suggest minimum 4.5:1 ratio, provide example
   - `image-alt`: suggest adding `alt` attribute
   - `aria-valid-attr`: suggest correct attribute name
@@ -172,18 +172,18 @@
   - `landmark-one-main`: suggest wrapping in `<main>`
   - `link-name`: suggest adding accessible name
   - `button-name`: suggest adding accessible name
-- [ ] Unknown violations: generic "check the WCAG documentation" fallback
+- [x] Unknown violations: generic "check the WCAG documentation" fallback
 
 ### 1.4.3 — Processing tests with real axe-core data
 
-- [ ] Test: single violation → correct structure
-- [ ] Test: multiple violations → grouped by rule
-- [ ] Test: violations sorted by impact
-- [ ] Test: known violation → has suggested fix
-- [ ] Test: unknown violation → has generic fallback
-- [ ] Test: empty violations → empty result
+- [x] Test: single violation → correct structure
+- [x] Test: multiple violations → grouped by rule
+- [x] Test: violations sorted by impact
+- [x] Test: known violation → has suggested fix
+- [x] Test: unknown violation → has generic fallback
+- [x] Test: empty violations → empty result
 
-**Verification:** `npx vitest run src/processor.test.ts` — all pass
+**Verification:** `npx vitest run src/processor.test.ts` — 17 passed
 
 ---
 
@@ -282,7 +282,7 @@
 | 1.1 Config & Bootstrap | 4 tasks | 4/4 |
 | 1.2 Diff Analyzer & Route Resolver | 4 tasks | 4/4 |
 | 1.3 Browser & Auditor | 5 tasks | 5/5 |
-| 1.4 Result Processor | 3 tasks | 0/3 |
+| 1.4 Result Processor | 3 tasks | 3/3 |
 | 1.5 PR Comment & Check | 5 tasks | 0/5 |
 | 1.6 Integration Test | 3 tasks | 0/3 |
-| **Total** | **24 tasks** | **13/24** |
+| **Total** | **24 tasks** | **16/24** |
