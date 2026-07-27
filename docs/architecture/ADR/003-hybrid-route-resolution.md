@@ -1,25 +1,25 @@
-# ADR 003: Resolución híbrida de rutas
+# ADR 003: Hybrid route resolution
 
-**Fecha:** 2026-07-27
-**Contexto:** Necesitamos determinar qué páginas/rutas escanear en cada PR. Escanear todas las rutas del proyecto es lento e innecesario. Escanear solo las del diff puede omitir páginas críticas.
+**Date:** 2026-07-27
+**Context:** We need to determine which pages/routes to scan on each PR. Scanning all project routes is slow and unnecessary. Scanning only diff routes can miss critical pages.
 
-**Opciones consideradas:**
-1. Solo rutas del diff — rápido pero incompleto
-2. Todas las rutas del proyecto — completo pero lento
-3. El usuario configura manualmente — flexible pero requiere mantenimiento
-4. Híbrido: core routes (configurables) + detección automática desde el diff
+**Options considered:**
+1. Diff routes only — fast but incomplete
+2. All project routes — complete but slow
+3. User configures manually — flexible but requires maintenance
+4. Hybrid: core routes (configurable) + automatic detection from diff
 
-**Decisión:** Híbrido.
+**Decision:** Hybrid.
 
-**Justificación:**
-- El usuario define rutas core que siempre se escanean (home, login, dashboard, etc.)
-- El bot detecta rutas nuevas o modificadas analizando el git diff (archivos `page.tsx`, `route.tsx`, etc.)
-- Se desduplican y se escanea cada ruta una sola vez
-- Balance entre velocidad y cobertura
+**Justification:**
+- User defines core routes that are always scanned (home, login, dashboard, etc.)
+- Bot detects new or modified routes by analyzing the git diff (`page.tsx`, `route.tsx`, etc.)
+- Routes are deduplicated and each is scanned once
+- Balance between speed and coverage
 
-**Consecuencias:**
-- El diff analyzer necesita entender la estructura del framework (Next.js App Router, etc.)
-- Para frameworks no soportados, el usuario puede definir todas las rutas manualmente en core
-- Las rutas detectadas automáticamente pueden tener falsos positivos (archivos que no son páginas)
+**Consequences:**
+- The diff analyzer needs to understand the framework structure (Next.js App Router, etc.)
+- For unsupported frameworks, the user can define all routes manually in core
+- Automatically detected routes may have false positives (files that aren't pages)
 
-**Estado:** Aceptada
+**Status:** Accepted
