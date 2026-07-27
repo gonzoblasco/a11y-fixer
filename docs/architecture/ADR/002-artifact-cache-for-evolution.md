@@ -1,25 +1,25 @@
-# ADR 002: Cache en artifacts de GitHub Actions para evolución
+# ADR 002: GitHub Actions artifact cache for evolution
 
-**Fecha:** 2026-07-27
-**Contexto:** Para mostrar la evolución de accesibilidad entre PRs (violaciones nuevas, resueltas, persistentes), necesitamos comparar contra un baseline. Este baseline debe persistir entre ejecuciones de la Action.
+**Date:** 2026-07-27
+**Context:** To show accessibility evolution between PRs (new, fixed, persistent violations), we need to compare against a baseline. This baseline must persist between Action runs.
 
-**Opciones consideradas:**
-1. Base de datos externa (Supabase, Neon, etc.) — viola la restricción de "sin DB propia"
-2. Cache en artifacts de GitHub Actions — efímero pero suficiente
-3. Archivo en el repo (`.a11y-baseline.json`) — contamina el historial de git
-4. Sin cache, solo reporte del PR sin evolución — pierde la feature F3
+**Options considered:**
+1. External database (Supabase, Neon, etc.) — violates the "no DB" constraint
+2. GitHub Actions artifact cache — ephemeral but sufficient
+3. File in the repo (`.a11y-baseline.json`) — pollutes git history
+4. No cache, PR-only report without evolution — loses feature F3
 
-**Decisión:** Usar artifacts de GitHub Actions con `actions/upload-artifact` y `actions/download-artifact`.
+**Decision:** Use GitHub Actions artifacts with `actions/upload-artifact` and `actions/download-artifact`.
 
-**Justificación:**
-- No requiere infraestructura externa
-- Los artifacts persisten mientras GitHub los conserve (90 días por defecto)
-- El baseline se asocia al commit de main, no al PR
-- Si el artifact se pierde, simplemente no hay comparación de evolución — no es blocking
+**Justification:**
+- No external infrastructure required
+- Artifacts persist as long as GitHub keeps them (90 days by default)
+- Baseline is tied to the main commit, not the PR
+- If the artifact is lost, there's simply no evolution comparison — not blocking
 
-**Consecuencias:**
-- La primera ejecución en un repo nuevo no tendrá baseline (solo reporta violaciones actuales)
-- Si GitHub purga los artifacts, se pierde el historial de evolución
-- Necesitamos un sistema de cache key basado en el SHA del commit de main
+**Consequences:**
+- First run on a new repo won't have a baseline (reports current violations only)
+- If GitHub purges artifacts, evolution history is lost
+- Need a cache key system based on the main commit SHA
 
-**Estado:** Aceptada
+**Status:** Accepted
