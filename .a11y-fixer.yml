@@ -1,0 +1,48 @@
+# a11y-fixer configuration
+# See https://github.com/gonzoblasco/a11y-fixer for full documentation
+
+# WCAG level target: A, AA, or AAA
+level: AA
+
+# Maximum impact treated as failure: minor, moderate, serious, critical
+max_impact: serious
+
+# Maximum new violations before the check fails
+max_new_violations: 5
+
+# Routes to scan
+routes:
+  # Routes always scanned on every PR
+  core:
+    - /
+    - /login
+    - /dashboard
+
+  # Routes that require authentication (optional)
+  # authenticated:
+  #   - path: /admin
+  #     auth:
+  #       type: cookie
+  #       value: session=abc123; token=xyz789
+  #   - path: /settings
+  #     auth:
+  #       type: header
+  #       value: "X-API-Key: my-secret-key"
+  #   - path: /api/private
+  #     auth:
+  #       type: token
+  #       value: my-bearer-token
+
+# AI-powered explanations (optional, BYOK)
+# Set OPENAI_API_KEY, ANTHROPIC_API_KEY, or OPENROUTER_API_KEY in your workflow
+ai:
+  enabled: false
+  # provider: openai       # openai, anthropic, or openrouter
+  # model: gpt-4o-mini     # model name for the chosen provider
+
+# Rules and selectors to ignore (optional)
+# ignore:
+#   rules:
+#     - color-contrast     # skip a specific axe-core rule
+#   selectors:
+#     - '.ignored-element' # skip violations on specific elements
