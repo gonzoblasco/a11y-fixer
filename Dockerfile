@@ -6,15 +6,17 @@ RUN apt-get update && \
         gh \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the bundled action
-COPY dist/ /action/dist/
-COPY action.yml /action/action.yml
+# Copy the entire repo (not just dist/) so npm ci can install all deps
+COPY . /action/
 
-# Install playwright as a local dependency so require('playwright') resolves
-RUN npm init -y --prefix /action && \
-    npm install playwright@1.61.1 --prefix /action
+# Install all dependencies including Playwright
+# Playwright browsers are already in the base image
+RUN cd /action && npm ci
+
+# Compile TypeScript to dist/
+RUN cd /action && npx tsc
 
 WORKDIR /github/workspace
 
-# The action entry point
-ENTRYPOINT ["node", "/action/dist/index.js"]
+# The action entry point — compiled from src/action.ts
+ENTRYPOINT ["node", "/action/dist/action.js"]
