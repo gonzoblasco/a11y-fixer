@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process';
+import * as core from '@actions/core';
 
 /**
  * GitHub API wrappers for posting comments and setting check statuses.
@@ -11,6 +12,13 @@ let ghAvailable: boolean | null = null;
 
 function checkGh(): boolean {
   if (ghAvailable !== null) return ghAvailable;
+
+  // Configure gh with the GitHub token from action inputs
+  const token = core.getInput('github_token');
+  if (token) {
+    process.env.GH_TOKEN = token;
+  }
+
   try {
     execSync('gh auth status', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
     ghAvailable = true;
