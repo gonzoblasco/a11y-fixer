@@ -62,13 +62,10 @@ export function postComment(comment: string): void {
   execSync(`cat > ${tmpFile}`, { input: comment, encoding: 'utf-8' });
 
   try {
-    execSync(
-      `gh pr comment ${prNumber} --repo ${ownerRepo} --body-file "${tmpFile}"`,
-      {
-        encoding: 'utf-8',
-        stdio: ['pipe', 'pipe', 'ignore'],
-      },
-    );
+    execSync(`gh pr comment ${prNumber} --repo ${ownerRepo} --body-file "${tmpFile}"`, {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    });
   } finally {
     execSync(`rm -f "${tmpFile}"`);
   }
