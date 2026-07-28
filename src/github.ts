@@ -13,14 +13,20 @@ let ghAvailable: boolean | null = null;
 function checkGh(): boolean {
   if (ghAvailable !== null) return ghAvailable;
 
-  // Configure gh with the GitHub token from action inputs
+  // Set GH_TOKEN from action inputs
   const token = core.getInput('github_token');
   if (token) {
     process.env.GH_TOKEN = token;
   }
 
+  // Verify gh binary exists and token is available
   try {
-    execSync('gh auth status', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
+    execSync('gh --version', { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] });
+    if (!process.env.GH_TOKEN) {
+      console.warn('GH_TOKEN not set. gh CLI will not be authenticated.');
+      ghAvailable = false;
+      return ghAvailable;
+    }
     ghAvailable = true;
   } catch {
     ghAvailable = false;

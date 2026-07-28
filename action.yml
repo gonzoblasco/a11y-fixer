@@ -13,6 +13,10 @@ inputs:
     description: 'Path to .a11y-fixer.yml configuration file'
     required: false
     default: '.a11y-fixer.yml'
+  target_url:
+    description: 'Base URL of the app to audit (e.g. http://localhost:3000 or http://host.docker.internal:3000)'
+    required: false
+    default: 'http://localhost:3000'
 
 runs:
   using: 'docker'

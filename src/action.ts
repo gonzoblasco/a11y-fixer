@@ -69,12 +69,16 @@ export async function run(): Promise<void> {
     const browser = await createBrowser();
     const page = await createPage(browser);
 
+    // 6. Resolve target base URL
+    const targetUrl = core.getInput('target_url') || 'http://localhost:3000';
+    core.info(`Target URL: ${targetUrl}`);
+
     try {
-      // 6. Run audits on each route
+      // 7. Run audits on each route
       const allViolations: Violation[] = [];
 
       for (const route of routes) {
-        const url = `http://localhost:3000${route}`;
+        const url = `${targetUrl}${route}`;
 
         try {
           // Check if this route needs authentication
