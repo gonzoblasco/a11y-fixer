@@ -3,10 +3,9 @@
   "version": "0.1.0",
   "description": "Accessibility audit bot for GitHub PRs",
   "private": true,
-  "main": "dist/index.js",
+  "main": "dist/action.js",
   "scripts": {
-    "build": "ncc build src/action.ts -o dist --source-map --license licenses.txt",
-    "bundle": "ncc build src/action.ts -o dist --source-map --license licenses.txt",
+    "build": "tsc",
     "dev": "tsc --watch",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -27,7 +26,6 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
     "@types/node": "^22.0.0",
-    "@vercel/ncc": "^0.44.1",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
   },
