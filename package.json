@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Accessibility audit bot for GitHub PRs",
   "private": true,
-  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/action.ts -o dist --source-map --license licenses.txt",
