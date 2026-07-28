@@ -23,18 +23,23 @@ import type { ProcessedViolation, Violation } from './types.js';
 
 export async function run(): Promise<void> {
   try {
+    console.log('a11y-fixer starting...');
     core.info('a11y-fixer starting...');
 
     // 1. Load configuration
     const configPath = core.getInput('config') || '.a11y-fixer.yml';
+    console.log(`Config path: ${configPath}`);
     const config = loadConfig(configPath);
+    console.log(`Config loaded: WCAG ${config.level}, max impact ${config.max_impact}`);
     core.info(`Config loaded: WCAG ${config.level}, max impact ${config.max_impact}`);
 
     // 2. Get SHAs for diff comparison
     const baseSha = getBaseSha();
     const headSha = getHeadSha();
+    console.log(`baseSha: ${baseSha?.slice(0, 7) ?? 'null'}, headSha: ${headSha?.slice(0, 7) ?? 'null'}`);
 
     if (!baseSha || !headSha) {
+      console.log('Could not determine base/head SHAs. Skipping diff analysis.');
       core.warning('Could not determine base/head SHAs. Skipping diff analysis.');
       return;
     }
@@ -43,13 +48,16 @@ export async function run(): Promise<void> {
 
     // 3. Get changed files from git diff
     const changedFiles = getChangedFiles(baseSha, headSha);
+    console.log(`Found ${changedFiles.length} changed files`);
     core.info(`Found ${changedFiles.length} changed files`);
 
     // 4. Resolve routes to scan
     const routes = resolveRoutes(config, changedFiles);
+    console.log(`Routes to scan: ${routes.join(', ')}`);
     core.info(`Routes to scan: ${routes.join(', ')}`);
 
     if (routes.length === 0) {
+      console.log('No routes to scan. Skipping audit.');
       core.info('No routes to scan. Skipping audit.');
       setCheckStatus('success', 'No routes changed in this PR.');
       return;
@@ -142,3 +150,6 @@ export async function run(): Promise<void> {
     }
   }
 }
+
+// Invoke the action
+run();
