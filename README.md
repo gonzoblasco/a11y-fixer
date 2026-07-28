@@ -49,10 +49,11 @@ jobs:
           npm run start &
           npx wait-on http://localhost:3000
 
-      - uses: gonzoblasco/a11y-fixer@v0.1.0
+      - uses: gonzoblasco/a11y-fixer@v0.5.1
         with:
           config: .a11y-fixer.yml
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          target_url: http://localhost:3000
 ```
 
 Create `.a11y-fixer.yml` in your repo root:
@@ -104,6 +105,7 @@ See [docs/design/DESIGN.md](docs/design/DESIGN.md) for the full configuration sp
 |---|---|---|---|
 | `config` | no | `.a11y-fixer.yml` | Path to configuration file. |
 | `github_token` | yes | — | GitHub token for posting comments and checks. |
+| `target_url` | no | `http://localhost:3000` | Base URL of the app to audit. Use `http://host.docker.internal:3000` for Docker container access. |
 
 ## Outputs
 
@@ -122,7 +124,7 @@ Set these environment variables in your workflow:
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     # or ANTHROPIC_API_KEY, or OPENROUTER_API_KEY
-  uses: gonzoblasco/a11y-fixer@v0.1.0
+  uses: gonzoblasco/a11y-fixer@v0.5.1
 ```
 
 Then enable AI in your config:
