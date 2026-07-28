@@ -36,7 +36,9 @@ export async function run(): Promise<void> {
     // 2. Get SHAs for diff comparison
     const baseSha = getBaseSha();
     const headSha = getHeadSha();
-    console.log(`baseSha: ${baseSha?.slice(0, 7) ?? 'null'}, headSha: ${headSha?.slice(0, 7) ?? 'null'}`);
+    console.log(
+      `baseSha: ${baseSha?.slice(0, 7) ?? 'null'}, headSha: ${headSha?.slice(0, 7) ?? 'null'}`,
+    );
 
     if (!baseSha || !headSha) {
       console.log('Could not determine base/head SHAs. Skipping diff analysis.');
