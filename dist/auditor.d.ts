@@ -7,4 +7,3 @@ import type { Violation } from './types.js';
  * structured violations.
  */
 export declare function runAudit(page: Page): Promise<Violation[]>;
-//# sourceMappingURL=auditor.d.ts.map

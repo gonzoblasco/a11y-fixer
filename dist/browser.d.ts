@@ -33,4 +33,3 @@ export declare function navigateToRoute(page: Page, url: string): Promise<void>;
  * Close the browser and clean up resources.
  */
 export declare function closeBrowser(browser: Browser): Promise<void>;
-//# sourceMappingURL=browser.d.ts.map

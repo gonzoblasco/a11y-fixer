@@ -25,4 +25,3 @@ export declare function getBaseSha(): string | null;
  * Get the head branch SHA from the GitHub event payload.
  */
 export declare function getHeadSha(): string | null;
-//# sourceMappingURL=github.d.ts.map

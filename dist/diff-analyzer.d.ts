@@ -6,4 +6,3 @@
  * empty diffs, binary files, and deleted files.
  */
 export declare function getChangedFiles(baseSha: string, headSha: string): string[];
-//# sourceMappingURL=diff-analyzer.d.ts.map

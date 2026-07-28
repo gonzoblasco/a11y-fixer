@@ -32,4 +32,3 @@ export interface EvolutionResult {
     persistentViolations: ProcessedViolation[];
     trend: 'improves' | 'worsens' | 'neutral' | 'first';
 }
-//# sourceMappingURL=types.d.ts.map

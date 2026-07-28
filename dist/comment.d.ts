@@ -11,4 +11,3 @@ import type { EvolutionResult, ProcessedResult } from './types.js';
  * 5. Configuration footer
  */
 export declare function generateComment(result: ProcessedResult, evolution: EvolutionResult, config: Config): string;
-//# sourceMappingURL=comment.d.ts.map

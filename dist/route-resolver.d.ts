@@ -13,4 +13,3 @@ export declare function resolveRoutes(config: Config, changedFiles: string[]): s
  * Returns the detected route or null if the file is not a page/route.
  */
 export declare function detectRouteFromFile(filePath: string): string | null;
-//# sourceMappingURL=route-resolver.d.ts.map

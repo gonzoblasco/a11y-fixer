@@ -27,15 +27,15 @@ declare const authenticatedRouteSchema: z.ZodObject<{
 }>;
 declare const aiConfigSchema: z.ZodObject<{
     enabled: z.ZodDefault<z.ZodBoolean>;
-    provider: z.ZodOptional<z.ZodEnum<["openai", "anthropic"]>>;
+    provider: z.ZodOptional<z.ZodEnum<["openai", "anthropic", "openrouter"]>>;
     model: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     enabled: boolean;
-    provider?: "openai" | "anthropic" | undefined;
+    provider?: "openai" | "anthropic" | "openrouter" | undefined;
     model?: string | undefined;
 }, {
     enabled?: boolean | undefined;
-    provider?: "openai" | "anthropic" | undefined;
+    provider?: "openai" | "anthropic" | "openrouter" | undefined;
     model?: string | undefined;
 }>;
 declare const ignoreConfigSchema: z.ZodObject<{
@@ -100,15 +100,15 @@ export declare const configSchema: z.ZodObject<{
     }>>;
     ai: z.ZodDefault<z.ZodObject<{
         enabled: z.ZodDefault<z.ZodBoolean>;
-        provider: z.ZodOptional<z.ZodEnum<["openai", "anthropic"]>>;
+        provider: z.ZodOptional<z.ZodEnum<["openai", "anthropic", "openrouter"]>>;
         model: z.ZodOptional<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         enabled: boolean;
-        provider?: "openai" | "anthropic" | undefined;
+        provider?: "openai" | "anthropic" | "openrouter" | undefined;
         model?: string | undefined;
     }, {
         enabled?: boolean | undefined;
-        provider?: "openai" | "anthropic" | undefined;
+        provider?: "openai" | "anthropic" | "openrouter" | undefined;
         model?: string | undefined;
     }>>;
     ignore: z.ZodOptional<z.ZodObject<{
@@ -123,7 +123,7 @@ export declare const configSchema: z.ZodObject<{
     }>>;
 }, "strip", z.ZodTypeAny, {
     level: "A" | "AA" | "AAA";
-    max_impact: "critical" | "serious" | "moderate" | "minor";
+    max_impact: "minor" | "moderate" | "serious" | "critical";
     max_new_violations: number;
     routes: {
         core: string[];
@@ -137,7 +137,7 @@ export declare const configSchema: z.ZodObject<{
     };
     ai: {
         enabled: boolean;
-        provider?: "openai" | "anthropic" | undefined;
+        provider?: "openai" | "anthropic" | "openrouter" | undefined;
         model?: string | undefined;
     };
     ignore?: {
@@ -146,7 +146,7 @@ export declare const configSchema: z.ZodObject<{
     } | undefined;
 }, {
     level?: "A" | "AA" | "AAA" | undefined;
-    max_impact?: "critical" | "serious" | "moderate" | "minor" | undefined;
+    max_impact?: "minor" | "moderate" | "serious" | "critical" | undefined;
     max_new_violations?: number | undefined;
     routes?: {
         core?: string[] | undefined;
@@ -160,7 +160,7 @@ export declare const configSchema: z.ZodObject<{
     } | undefined;
     ai?: {
         enabled?: boolean | undefined;
-        provider?: "openai" | "anthropic" | undefined;
+        provider?: "openai" | "anthropic" | "openrouter" | undefined;
         model?: string | undefined;
     } | undefined;
     ignore?: {
@@ -174,4 +174,3 @@ export type AuthenticatedRoute = z.infer<typeof authenticatedRouteSchema>;
 export type AiConfig = z.infer<typeof aiConfigSchema>;
 export type IgnoreConfig = z.infer<typeof ignoreConfigSchema>;
 export {};
-//# sourceMappingURL=config.schema.d.ts.map

@@ -20,4 +20,3 @@ export declare function getLatestBaselineSha(): string | null;
  * Clear all cached baselines.
  */
 export declare function clearCache(): void;
-//# sourceMappingURL=cache.d.ts.map

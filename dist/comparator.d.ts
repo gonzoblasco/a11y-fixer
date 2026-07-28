@@ -7,4 +7,3 @@ import type { EvolutionResult, ProcessedResult } from './types.js';
  * A violation is the "same" if the same rule fires on the same element.
  */
 export declare function compare(current: ProcessedResult, baseline: ProcessedResult | null): EvolutionResult;
-//# sourceMappingURL=comparator.d.ts.map

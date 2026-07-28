@@ -9,4 +9,3 @@ import { type Config } from './config.schema.js';
  * If the file is invalid, throws a descriptive error.
  */
 export declare function loadConfig(configPath?: string): Config;
-//# sourceMappingURL=config.d.ts.map
