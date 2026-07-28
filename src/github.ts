@@ -13,10 +13,11 @@ let ghAvailable: boolean | null = null;
 function checkGh(): boolean {
   if (ghAvailable !== null) return ghAvailable;
 
-  // Set GH_TOKEN from action inputs
+  // Set GH_TOKEN and GITHUB_TOKEN from action inputs
   const token = core.getInput('github_token');
   if (token) {
     process.env.GH_TOKEN = token;
+    process.env.GITHUB_TOKEN = token;
   }
 
   // Verify gh binary exists and token is available
@@ -50,15 +51,24 @@ export function postComment(comment: string): void {
     return;
   }
 
+  const ownerRepo = getOwnerRepo();
+  if (!ownerRepo) {
+    console.warn('Could not determine owner/repo. Skipping PR comment.');
+    return;
+  }
+
   // Write comment to temp file to avoid shell escaping issues
   const tmpFile = `/tmp/a11y-fixer-comment-${Date.now()}.md`;
   execSync(`cat > ${tmpFile}`, { input: comment, encoding: 'utf-8' });
 
   try {
-    execSync(`gh pr comment ${prNumber} --body-file "${tmpFile}"`, {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'ignore'],
-    });
+    execSync(
+      `gh pr comment ${prNumber} --repo ${ownerRepo} --body-file "${tmpFile}"`,
+      {
+        encoding: 'utf-8',
+        stdio: ['pipe', 'pipe', 'ignore'],
+      },
+    );
   } finally {
     execSync(`rm -f "${tmpFile}"`);
   }
