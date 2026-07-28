@@ -373,8 +373,8 @@
 
 ### 3.1.5 — Wire AI explainer into pipeline
 
-- [ ] Entry point calls `generateAiExplanation()` for each violation when `ai.enabled === true`
-- [ ] Comment shows "AI-powered explanation" badge when AI is used
+- [x] Entry point calls `generateAiExplanation()` for each violation when `ai.enabled === true`
+- [x] Comment shows "AI-powered explanation" badge when AI is used
 
 **Verification:** `npx vitest run src/ai-explainer.test.ts` — 10 passed
 
@@ -392,5 +392,5 @@
 | 1.6 Integration Test | 3 tasks | 3/3 |
 | 2.1 Threshold Engine | 3 tasks | 3/3 |
 | 2.2 Ignore Rules | 2 tasks | 2/2 |
-| 3.1 AI Explainer (BYOK) | 5 tasks | 4/5 |
-| **Total** | **34 tasks** | **33/34** |
+| 3.1 AI Explainer (BYOK) | 5 tasks | 5/5 |
+| **Total** | **34 tasks** | **34/34** |
