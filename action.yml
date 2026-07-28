@@ -15,5 +15,5 @@ inputs:
     default: '.a11y-fixer.yml'
 
 runs:
-  using: 'node20'
-  main: 'dist/index.js'
+  using: 'docker'
+  image: 'Dockerfile'
