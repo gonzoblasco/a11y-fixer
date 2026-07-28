@@ -380,6 +380,63 @@
 
 ---
 
+## Phase 4 — Distribution & Docs
+
+**Goal:** Publish on GitHub Marketplace with proper branding and documentation.
+
+---
+
+## Epic 4.1 — GitHub Marketplace
+
+**Goal:** Action is ready for Marketplace listing with branding and quickstart template.
+
+### 4.1.1 — Update README.md with badges
+
+- [x] Badges: CI status, test count (102 passing), version, license, Node version
+- [x] Inputs table (config, github_token)
+- [x] AI env var documentation
+- [x] Status/roadmap table linking to ROADMAP.md
+
+### 4.1.2 — Update action.yml with Marketplace branding
+
+- [x] `branding.icon: eye`
+- [x] `branding.color: green`
+- [x] Renamed input `config_path` → `config` for simplicity
+
+### 4.1.3 — Create .a11y-fixer.yml quickstart template
+
+- [x] Commented examples for authenticated routes, ignore rules, AI config
+
+**Verification:** action.yml passes Marketplace validation, README renders correctly
+
+---
+
+## Epic 4.2 — Documentation
+
+**Goal:** Complete documentation for users and contributors.
+
+### 4.2.1 — Full config documentation
+
+- [x] DESIGN.md already documents all options with examples
+
+### 4.2.2 — Create CONTRIBUTING.md
+
+- [x] Setup instructions
+- [x] Development workflow (pre-commit steps)
+- [x] Project structure
+- [x] Code style and testing
+
+### 4.2.3 — Create framework examples
+
+- [x] examples/nextjs.md — Next.js App Router
+- [x] examples/react.md — React (Vite)
+- [x] examples/vue.md — Vue (Nuxt)
+- [x] examples/angular.md — Angular
+
+**Verification:** All docs are consistent, accurate, and linked from README
+
+---
+
 ## Progress summary
 
 | Epic | Tasks | Done |
@@ -393,4 +450,6 @@
 | 2.1 Threshold Engine | 3 tasks | 3/3 |
 | 2.2 Ignore Rules | 2 tasks | 2/2 |
 | 3.1 AI Explainer (BYOK) | 5 tasks | 5/5 |
-| **Total** | **34 tasks** | **34/34** |
+| 4.1 GitHub Marketplace | 3 tasks | 3/3 |
+| 4.2 Documentation | 3 tasks | 3/3 |
+| **Total** | **40 tasks** | **40/40** |
