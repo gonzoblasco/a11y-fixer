@@ -1,9 +1,12 @@
 {
   "name": "a11y-fixer",
-  "version": "0.1.0",
+  "version": "0.6.0",
   "description": "Accessibility audit bot for GitHub PRs",
-  "private": true,
+  "private": false,
   "main": "dist/action.js",
+  "bin": {
+    "a11y-fixer": "./dist/cli/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -12,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@actions/artifact": "^6.2.1",
