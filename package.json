@@ -23,10 +23,7 @@
     "axe-core",
     "playwright"
   ],
-  "files": [
-    "dist",
-    "!dist/**/*.map"
-  ],
+  "files": ["dist", "!dist/**/*.map"],
   "types": "dist/action.d.ts",
   "main": "dist/action.js",
   "bin": {
