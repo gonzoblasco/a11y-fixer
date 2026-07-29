@@ -103,25 +103,34 @@ describe('Full pipeline integration', () => {
     const page = await createPage(browser);
     const filePath = `file://${path.join(FIXTURES_DIR, 'multiple-violations.html')}`;
 
-    // First run: create baseline
-    await page.goto(filePath, { waitUntil: 'networkidle' });
-    const violations1 = await runAudit(page);
-    const result1 = processViolations(violations1);
-    await saveBaseline(result1, TEST_SHA);
+    // Force local mode: unset GITHUB_ACTIONS so saveBaseline/loadBaseline
+    // use the filesystem cache instead of trying to upload artifacts.
+    const origGitHubActions = process.env.GITHUB_ACTIONS;
+    process.env.GITHUB_ACTIONS = 'false';
 
-    // Second run: scan a better page
-    const goodPath = `file://${path.join(FIXTURES_DIR, 'good.html')}`;
-    await page.goto(goodPath, { waitUntil: 'networkidle' });
-    const violations2 = await runAudit(page);
-    const result2 = processViolations(violations2);
+    try {
+      // First run: create baseline
+      await page.goto(filePath, { waitUntil: 'networkidle' });
+      const violations1 = await runAudit(page);
+      const result1 = processViolations(violations1);
+      await saveBaseline(result1, TEST_SHA);
 
-    // Load baseline and compare
-    const baseline = await loadBaseline(TEST_SHA);
-    const evolution = compare(result2, baseline);
+      // Second run: scan a better page
+      const goodPath = `file://${path.join(FIXTURES_DIR, 'good.html')}`;
+      await page.goto(goodPath, { waitUntil: 'networkidle' });
+      const violations2 = await runAudit(page);
+      const result2 = processViolations(violations2);
 
-    expect(evolution.trend).toBe('improves');
-    expect(evolution.fixedViolations.length).toBeGreaterThan(0);
-    expect(evolution.newViolations.length).toBe(0);
+      // Load baseline and compare
+      const baseline = await loadBaseline(TEST_SHA);
+      const evolution = compare(result2, baseline);
+
+      expect(evolution.trend).toBe('improves');
+      expect(evolution.fixedViolations.length).toBeGreaterThan(0);
+      expect(evolution.newViolations.length).toBe(0);
+    } finally {
+      process.env.GITHUB_ACTIONS = origGitHubActions;
+    }
 
     await page.close();
   }, 20_000);
