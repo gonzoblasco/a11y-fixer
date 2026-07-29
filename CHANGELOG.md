@@ -2,16 +2,18 @@
 
 ## [0.6.0] — 2026-07-28
 
+### Added
+
+- **Fixer engine** (`src/core/fixer.ts`) — generates concrete, actionable fix suggestions with three fixability levels: `auto` (safe, deterministic patches), `suggest` (needs human review), `explain` (cannot be automated). Supports 8 violation types with code patches.
+- **CLI** (`src/cli/index.ts`) — run audits and fixes from the command line with `a11y-fixer audit`, `fix`, or `suggest`. Supports `--url`, `--config`, `--output json|markdown`, `--dry-run`, `--routes`.
+- **`bin` entry** in `package.json` — `a11y-fixer` command available globally after `npm install -g`.
+- **`prepack` script** — auto-builds before publishing to npm.
+
 ### Fixed
 
-- **Baseline cache now uses GitHub Actions artifacts** — `cache.ts` uploads/downloads
-  baselines as workflow artifacts when running in GHA, with filesystem fallback
-  for local development and tests. Evolution comparison now works in production.
-- **GitHub API calls use octokit natively** — `github.ts` now uses `@actions/github`
-  (octokit) for posting PR comments and setting check statuses, with `gh` CLI
-  as fallback. Also reads event payload from file instead of `execSync cat`.
-- **Entry point guard** — `action.ts` only invokes `run()` when loaded as the
-  entry point, preventing accidental execution on import.
+- **Baseline cache now uses GitHub Actions artifacts** — `cache.ts` uploads/downloads baselines as workflow artifacts when running in GHA, with filesystem fallback for local development and tests. Evolution comparison now works in production.
+- **GitHub API calls use octokit natively** — `github.ts` now uses `@actions/github` (octokit) for posting PR comments and setting check statuses, with `gh` CLI as fallback. Also reads event payload from file instead of `execSync cat`.
+- **Entry point guard** — `action.ts` only invokes `run()` when loaded as the entry point, preventing accidental execution on import.
 
 ## [0.5.1] — 2026-07-28
 

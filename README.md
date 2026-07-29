@@ -4,7 +4,7 @@
 [![Tests](https://img.shields.io/badge/tests-102%20passing-brightgreen)](https://github.com/gonzoblasco/a11y-fixer)
 [![Version](https://img.shields.io/github/v/release/gonzoblasco/a11y-fixer?include_prereleases)](https://github.com/gonzoblasco/a11y-fixer/releases)
 [![License](https://img.shields.io/github/license/gonzoblasco/a11y-fixer)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D22-blue)](package.json)
+[![Docker](https://img.shields.io/badge/docker-playwright-blue)](Dockerfile)
 
 Accessibility audit bot for GitHub PRs. Runs axe-core via Playwright on every pull request, detects new accessibility violations, and posts structured feedback as a PR comment.
 
@@ -13,12 +13,14 @@ Built for teams that want accessibility enforcement without SaaS lock-in. No ext
 ## Features
 
 - **Automatic route detection** — scans core routes you define + detects Next.js App Router pages changed in the PR.
-- **Real browser auditing** — runs axe-core inside Playwright Chromium headless.
+- **Real browser auditing** — runs axe-core inside Playwright Chromium headless (Docker container).
 - **Authenticated pages** — supports cookies, HTTP headers, or Bearer tokens for protected routes.
 - **Baseline comparison** — compares current PR against main to report new, fixed, and persistent violations.
 - **Structured PR comments** — clean markdown with impact severity, affected elements, and suggested fixes.
 - **Configurable thresholds** — set max impact level, max new violations, WCAG target, and ignored rules.
 - **Optional AI explanations** — BYOK for OpenAI, Anthropic, or OpenRouter.
+- **Fix suggestions** — auto-fixable violations with code patches, suggest-level with replacement HTML.
+- **CLI mode** — run audits and fixes from the command line with `a11y-fixer audit`, `fix`, or `suggest`.
 - **No SaaS dependency** — everything runs in your GitHub Actions runners.
 
 ## Quick Start
@@ -49,7 +51,7 @@ jobs:
           npm run start &
           npx wait-on http://localhost:3000
 
-      - uses: gonzoblasco/a11y-fixer@v0.5.1
+      - uses: gonzoblasco/a11y-fixer@v0.6.0
         with:
           config: .a11y-fixer.yml
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -124,7 +126,7 @@ Set these environment variables in your workflow:
   env:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     # or ANTHROPIC_API_KEY, or OPENROUTER_API_KEY
-  uses: gonzoblasco/a11y-fixer@v0.5.1
+  uses: gonzoblasco/a11y-fixer@v0.6.0
 ```
 
 Then enable AI in your config:
@@ -134,6 +136,23 @@ ai:
   enabled: true
   provider: openai
   model: gpt-4o-mini
+```
+
+## CLI Usage
+
+Install globally and run locally:
+
+```bash
+npm install -g a11y-fixer
+
+# Run an audit
+a11y-fixer audit --url http://localhost:3000
+
+# Run audit with fix suggestions
+a11y-fixer fix --url http://localhost:3000
+
+# Output as JSON
+a11y-fixer audit --url http://localhost:3000 --output json
 ```
 
 ## Development
@@ -148,13 +167,15 @@ npm test
 ## Project Structure
 
 - `src/action.ts` — GitHub Action entry point (full pipeline orchestrator).
+- `src/cli/index.ts` — CLI entry point (`audit`, `fix`, `suggest` commands).
+- `src/core/fixer.ts` — Fix suggestion engine (auto, suggest, explain levels).
 - `src/config.ts` / `src/config.schema.ts` — Configuration loading and validation.
 - `src/diff-analyzer.ts` / `src/route-resolver.ts` — Git diff → routes to scan.
 - `src/browser.ts` / `src/auditor.ts` — Playwright + axe-core runner.
 - `src/processor.ts` — Violation structuring and suggested fixes.
 - `src/thresholds.ts` — Quality threshold evaluation.
-- `src/comparator.ts` / `src/cache.ts` — Baseline comparison and persistence.
-- `src/comment.ts` / `src/github.ts` — PR comment generation and posting.
+- `src/comparator.ts` / `src/cache.ts` — Baseline comparison and persistence (GHA artifacts + filesystem).
+- `src/comment.ts` / `src/github.ts` — PR comment generation and posting (octokit + gh CLI fallback).
 - `src/ai-explainer.ts` — AI-powered explanations (BYOK).
 - `docs/` — Product brief, architecture, design spec, roadmap, and ADRs.
 
@@ -165,7 +186,7 @@ npm test
 | 1 — Core Engine (MVP) | ✅ Complete | 24/24 |
 | 2 — Thresholds & Quality | ✅ Complete | 5/5 |
 | 3 — AI Explainer (BYOK) | ✅ Complete | 5/5 |
-| 4 — Distribution & Docs | 🔄 In Progress | 0/6 |
+| 4 — Distribution & Docs | ✅ Complete | 6/6 |
 | 5 — Post-MVP | ⬜ Planned | — |
 
 See [docs/ROADMAP.md](docs/ROADMAP.md) for details.
