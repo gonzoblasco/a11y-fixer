@@ -158,7 +158,8 @@ export async function run(): Promise<void> {
 }
 
 // Invoke the action only when this file is the entry point
-const isEntryPoint = process.argv[1]?.replace(/\.[cm]?[jt]s$/, '') === __filename.replace(/\.[cm]?[jt]s$/, '');
+const isEntryPoint =
+  process.argv[1]?.replace(/\.[cm]?[jt]s$/, '') === __filename.replace(/\.[cm]?[jt]s$/, '');
 if (isEntryPoint) {
   run();
 }

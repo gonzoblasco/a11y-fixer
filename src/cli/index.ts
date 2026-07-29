@@ -11,13 +11,13 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { runAudit } from '../auditor.js';
 import { applyAuth, closeBrowser, createBrowser, createPage, navigateToRoute } from '../browser.js';
-import { loadConfig } from '../config.js';
-import { processViolations } from '../processor.js';
+import { loadBaseline, saveBaseline } from '../cache.js';
 import { generateComment } from '../comment.js';
 import { compare } from '../comparator.js';
-import { loadBaseline, saveBaseline } from '../cache.js';
-import { generateFixes } from '../core/fixer.js';
+import { loadConfig } from '../config.js';
 import type { Config } from '../config.schema.js';
+import { generateFixes } from '../core/fixer.js';
+import { processViolations } from '../processor.js';
 import type { Violation } from '../types.js';
 
 interface CliOptions {
@@ -82,6 +82,7 @@ function parseArgs(): CliOptions & { command: string } {
       case '--help':
         printHelp();
         process.exit(0);
+        break;
       default:
         console.error(`Unknown option: ${args[i]}`);
         printHelp();
@@ -151,7 +152,12 @@ async function runAuditCli(options: CliOptions): Promise<void> {
       for (const violation of result.violations) {
         const fixes = generateFixes(violation);
         for (const fix of fixes) {
-          const badge = fix.fixability === 'auto' ? '✅ AUTO' : fix.fixability === 'suggest' ? '💡 SUGGEST' : '📝 EXPLAIN';
+          const badge =
+            fix.fixability === 'auto'
+              ? '✅ AUTO'
+              : fix.fixability === 'suggest'
+                ? '💡 SUGGEST'
+                : '📝 EXPLAIN';
           console.log(`### ${badge}: ${fix.rule}`);
           console.log(`  ${fix.description}`);
           if (fix.replacementHtml) {

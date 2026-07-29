@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { generateFixes } from './fixer.js';
 import type { ProcessedViolation } from '../types.js';
+import { generateFixes } from './fixer.js';
 
 function makeViolation(
   rule: string,
@@ -20,10 +20,7 @@ function makeViolation(
 describe('generateFixes', () => {
   describe('aria-valid-attr', () => {
     it('fixes aria-labeledby to aria-labelledby', () => {
-      const violation = makeViolation(
-        'aria-valid-attr',
-        '<input aria-labeledby="label-id">',
-      );
+      const violation = makeViolation('aria-valid-attr', '<input aria-labeledby="label-id">');
       const fixes = generateFixes(violation);
       expect(fixes).toHaveLength(1);
       expect(fixes[0].fixability).toBe('auto');
@@ -32,10 +29,7 @@ describe('generateFixes', () => {
     });
 
     it('returns explain for unknown invalid attributes', () => {
-      const violation = makeViolation(
-        'aria-valid-attr',
-        '<div aria-madeup="value">',
-      );
+      const violation = makeViolation('aria-valid-attr', '<div aria-madeup="value">');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('explain');
     });
@@ -56,20 +50,14 @@ describe('generateFixes', () => {
 
   describe('image-alt', () => {
     it('adds empty alt to img without alt', () => {
-      const violation = makeViolation(
-        'image-alt',
-        '<img src="photo.jpg">',
-      );
+      const violation = makeViolation('image-alt', '<img src="photo.jpg">');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('suggest');
       expect(fixes[0].replacementHtml).toContain('alt=""');
     });
 
     it('returns explain for img with existing alt', () => {
-      const violation = makeViolation(
-        'image-alt',
-        '<img src="photo.jpg" alt="">',
-      );
+      const violation = makeViolation('image-alt', '<img src="photo.jpg" alt="">');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('explain');
     });
@@ -77,20 +65,14 @@ describe('generateFixes', () => {
 
   describe('label', () => {
     it('adds label for input with id', () => {
-      const violation = makeViolation(
-        'label',
-        '<input id="email" type="text">',
-      );
+      const violation = makeViolation('label', '<input id="email" type="text">');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('suggest');
       expect(fixes[0].replacementHtml).toContain('<label for="email">');
     });
 
     it('wraps input without id in label', () => {
-      const violation = makeViolation(
-        'label',
-        '<input type="text" placeholder="Search">',
-      );
+      const violation = makeViolation('label', '<input type="text" placeholder="Search">');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('suggest');
       expect(fixes[0].replacementHtml).toContain('<label>');
@@ -123,10 +105,7 @@ describe('generateFixes', () => {
 
   describe('heading-order', () => {
     it('adjusts heading level down', () => {
-      const violation = makeViolation(
-        'heading-order',
-        '<h3>Subsection</h3>',
-      );
+      const violation = makeViolation('heading-order', '<h3>Subsection</h3>');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('suggest');
       expect(fixes[0].replacementHtml).toBe('<h2>Subsection</h2>');
@@ -146,10 +125,7 @@ describe('generateFixes', () => {
 
   describe('unknown rule', () => {
     it('returns explain for unknown rules', () => {
-      const violation = makeViolation(
-        'some-unknown-rule',
-        '<div>Content</div>',
-      );
+      const violation = makeViolation('some-unknown-rule', '<div>Content</div>');
       const fixes = generateFixes(violation);
       expect(fixes[0].fixability).toBe('explain');
     });

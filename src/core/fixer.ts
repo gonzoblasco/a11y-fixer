@@ -130,7 +130,8 @@ function fixAriaValidAttr(element: ViolationNode): FixSuggestion {
     return {
       rule: 'aria-valid-attr',
       fixability: 'explain',
-      description: `The element has an invalid ARIA attribute. Check the ARIA specification for the correct attribute name.`,
+      description:
+        'The element has an invalid ARIA attribute. Check the ARIA specification for the correct attribute name.',
       originalHtml: element.html,
     };
   }
@@ -157,21 +158,14 @@ function fixLandmarkOneMain(element: ViolationNode): FixSuggestion {
       fixability: 'suggest',
       description: 'Wrap the primary content of the page in a `<main>` element.',
       originalHtml: element.html,
-      replacementHtml: element.html.replace(
-        /(<body[^>]*>)/i,
-        '$1\n  <main>',
-      ).replace(
-        /(<\/body>)/i,
-        '  </main>\n$1',
-      ),
+      replacementHtml: element.html
+        .replace(/(<body[^>]*>)/i, '$1\n  <main>')
+        .replace(/(<\/body>)/i, '  </main>\n$1'),
     };
   }
 
   const bodyContent = bodyMatch[1].trim();
-  const fixedHtml = element.html.replace(
-    bodyContent,
-    `  <main>\n    ${bodyContent}\n  </main>`,
-  );
+  const fixedHtml = element.html.replace(bodyContent, `  <main>\n    ${bodyContent}\n  </main>`);
 
   return {
     rule: 'landmark-one-main',
@@ -194,7 +188,8 @@ function fixImageAlt(element: ViolationNode): FixSuggestion {
     return {
       rule: 'image-alt',
       fixability: 'explain',
-      description: 'Add an `alt` attribute describing the image content. For decorative images, use `alt=""`.',
+      description:
+        'Add an `alt` attribute describing the image content. For decorative images, use `alt=""`.',
       originalHtml: element.html,
     };
   }
@@ -216,7 +211,8 @@ function fixImageAlt(element: ViolationNode): FixSuggestion {
   return {
     rule: 'image-alt',
     fixability: 'suggest',
-    description: 'Added empty `alt=""` attribute. Replace with a descriptive alt text for informative images.',
+    description:
+      'Added empty `alt=""` attribute. Replace with a descriptive alt text for informative images.',
     originalHtml: element.html,
     replacementHtml: fixedHtml,
     patch: generatePatch(element.html, fixedHtml),
@@ -234,7 +230,8 @@ function fixLabel(element: ViolationNode): FixSuggestion {
     return {
       rule: 'label',
       fixability: 'explain',
-      description: 'Associate a `<label>` element with this input using the `for` attribute or by wrapping.',
+      description:
+        'Associate a `<label>` element with this input using the `for` attribute or by wrapping.',
       originalHtml: element.html,
     };
   }
@@ -283,7 +280,8 @@ function fixLinkName(element: ViolationNode): FixSuggestion {
     return {
       rule: 'link-name',
       fixability: 'explain',
-      description: 'Add accessible text to this link using text content, `aria-label`, or `aria-labelledby`.',
+      description:
+        'Add accessible text to this link using text content, `aria-label`, or `aria-labelledby`.',
       originalHtml: element.html,
     };
   }
@@ -323,7 +321,8 @@ function fixButtonName(element: ViolationNode): FixSuggestion {
     return {
       rule: 'button-name',
       fixability: 'explain',
-      description: 'Add accessible text to this button using text content, `aria-label`, or `aria-labelledby`.',
+      description:
+        'Add accessible text to this button using text content, `aria-label`, or `aria-labelledby`.',
       originalHtml: element.html,
     };
   }
@@ -339,7 +338,7 @@ function fixButtonName(element: ViolationNode): FixSuggestion {
   }
 
   const classMatch = buttonTag.match(/class=["']([^"']+)["']/);
-  const hint = classMatch ? classMatch[1].split(/\s+/).pop() ?? 'button' : 'button';
+  const hint = classMatch ? (classMatch[1].split(/\s+/).pop() ?? 'button') : 'button';
   const fixedTag = buttonTag.replace(/\/?>$/, ` aria-label="${hint}"$&`);
   const fixedHtml = element.html.replace(buttonTag, fixedTag);
 
@@ -372,13 +371,9 @@ function fixHeadingOrder(element: ViolationNode): FixSuggestion {
   const currentLevel = Number.parseInt(headingMatch[1], 10);
   const suggestedLevel = Math.max(1, currentLevel - 1);
 
-  const fixedHtml = element.html.replace(
-    new RegExp(`<h${currentLevel}([^>]*)>`, 'i'),
-    `<h${suggestedLevel}$1>`,
-  ).replace(
-    new RegExp(`</h${currentLevel}>`, 'i'),
-    `</h${suggestedLevel}>`,
-  );
+  const fixedHtml = element.html
+    .replace(new RegExp(`<h${currentLevel}([^>]*)>`, 'i'), `<h${suggestedLevel}$1>`)
+    .replace(new RegExp(`</h${currentLevel}>`, 'i'), `</h${suggestedLevel}>`);
 
   return {
     rule: 'heading-order',
@@ -398,7 +393,8 @@ function fixColorContrast(element: ViolationNode): FixSuggestion {
   return {
     rule: 'color-contrast',
     fixability: 'explain',
-    description: 'Text needs a contrast ratio of at least 4.5:1 against the background (3:1 for large text). Use a contrast checker tool to find compliant color combinations.',
+    description:
+      'Text needs a contrast ratio of at least 4.5:1 against the background (3:1 for large text). Use a contrast checker tool to find compliant color combinations.',
     originalHtml: element.html,
   };
 }

@@ -9,8 +9,8 @@
  * environment variable and the availability of the GitHub context.
  */
 
-import * as fs from 'node:fs';
 import { execSync } from 'node:child_process';
+import * as fs from 'node:fs';
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 

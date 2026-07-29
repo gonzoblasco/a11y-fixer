@@ -32,10 +32,7 @@ function isGitHubActions(): boolean {
  * In GitHub Actions: uploads the baseline as a workflow artifact.
  * Locally: saves to `.a11y-cache/baseline-{commitSha}.json`.
  */
-export async function saveBaseline(
-  result: ProcessedResult,
-  commitSha: string,
-): Promise<void> {
+export async function saveBaseline(result: ProcessedResult, commitSha: string): Promise<void> {
   if (isGitHubActions()) {
     await saveBaselineToArtifact(result, commitSha);
   } else {
@@ -93,10 +90,7 @@ function loadBaselineFromDisk(commitSha: string): ProcessedResult | null {
  * Writes the baseline to a temp file, then uploads it with a name
  * that includes the commit SHA so multiple baselines can coexist.
  */
-async function saveBaselineToArtifact(
-  result: ProcessedResult,
-  commitSha: string,
-): Promise<void> {
+async function saveBaselineToArtifact(result: ProcessedResult, commitSha: string): Promise<void> {
   const artifact = new DefaultArtifactClient();
 
   // Write to a temp file
@@ -129,9 +123,7 @@ async function saveBaselineToArtifact(
  *    from the current workflow run.
  * 3. If still not found, return null (first run or no baseline).
  */
-async function loadBaselineFromArtifact(
-  commitSha: string,
-): Promise<ProcessedResult | null> {
+async function loadBaselineFromArtifact(commitSha: string): Promise<ProcessedResult | null> {
   const artifact = new DefaultArtifactClient();
 
   // Try exact match first
