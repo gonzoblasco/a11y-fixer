@@ -12,7 +12,7 @@ const authenticatedRouteSchema = z.object({
 
 const aiConfigSchema = z.object({
   enabled: z.boolean().default(false),
-  provider: z.enum(['openai', 'anthropic', 'openrouter']).optional(),
+  provider: z.enum(['openai', 'anthropic', 'openrouter', 'ollama']).optional(),
   model: z.string().optional(),
 });
 

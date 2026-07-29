@@ -153,6 +153,41 @@ describe('generateAiExplanation', () => {
     expect(result.text).toContain('OpenRouter explanation');
   });
 
+  it('works with Ollama provider (no API key needed)', async () => {
+    const ollamaConfig: Config = {
+      ...defaultConfig,
+      ai: { enabled: true, provider: 'ollama', model: 'deepseek-v4-flash:cloud' },
+    };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [{ message: { content: 'Ollama explanation for the violation.' } }],
+      }),
+    } as Response);
+
+    const result = await generateAiExplanation(makeViolation(), ollamaConfig);
+    expect(result.source).toBe('ai');
+    expect(result.text).toContain('Ollama explanation');
+  });
+
+  it('falls back to template when Ollama returns non-ok status', async () => {
+    const ollamaConfig: Config = {
+      ...defaultConfig,
+      ai: { enabled: true, provider: 'ollama', model: 'deepseek-v4-flash:cloud' },
+    };
+
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+    } as Response);
+
+    const result = await generateAiExplanation(makeViolation(), ollamaConfig);
+    expect(result.source).toBe('template');
+    expect(result.text).toBe('');
+  });
+
   it('falls back to template for unknown provider', async () => {
     vi.stubEnv('MADEUP_API_KEY', 'sk-test');
 

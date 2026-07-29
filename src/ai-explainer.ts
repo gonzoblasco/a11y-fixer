@@ -86,10 +86,35 @@ const OPENROUTER_PROVIDER: AiProvider = {
   },
 };
 
+const OLLAMA_PROVIDER: AiProvider = {
+  name: 'ollama',
+  async generateExplanation(_prompt: string, _apiKey: string, model: string) {
+    const res = await fetch('http://localhost:11434/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: model || 'deepseek-v4-flash:cloud',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: _prompt },
+        ],
+        max_tokens: 800,
+        temperature: 0.3,
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(`Ollama API error: ${res.status} ${res.statusText}`);
+    }
+    const data = (await res.json()) as { choices: { message: { content: string } }[] };
+    return data.choices[0]?.message?.content ?? '';
+  },
+};
+
 const PROVIDERS: Record<string, AiProvider> = {
   openai: OPENAI_PROVIDER,
   anthropic: ANTHROPIC_PROVIDER,
   openrouter: OPENROUTER_PROVIDER,
+  ollama: OLLAMA_PROVIDER,
 };
 
 const SYSTEM_PROMPT = `You are an accessibility (a11y) expert. Your role is to help developers understand and fix WCAG violations.
@@ -147,7 +172,8 @@ export async function generateAiExplanation(
   const provider = config.ai.provider ?? 'openai';
   const apiKey = getApiKey(provider);
 
-  if (!apiKey) {
+  // Ollama runs locally and doesn't need an API key
+  if (!apiKey && provider !== 'ollama') {
     return { text: '', source: 'template' };
   }
 
