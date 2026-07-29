@@ -185,7 +185,7 @@ export async function generateAiExplanation(
   try {
     const prompt = buildPrompt(violation);
     const model = config.ai.model ?? '';
-    const explanation = await impl.generateExplanation(prompt, apiKey, model);
+    const explanation = await impl.generateExplanation(prompt, apiKey ?? '', model);
     if (!explanation.trim()) {
       return { text: '', source: 'template' };
     }
