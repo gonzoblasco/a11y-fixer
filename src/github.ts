@@ -1,12 +1,118 @@
-import { execSync } from 'node:child_process';
-import * as core from '@actions/core';
-
 /**
  * GitHub API wrappers for posting comments and setting check statuses.
  *
- * Uses the `gh` CLI for all operations. Falls back gracefully
- * if `gh` is not available or not authenticated.
+ * Two modes:
+ * - **Primary**: uses @actions/github (octokit) for all GitHub API calls.
+ * - **Fallback**: uses `gh` CLI via execSync if octokit is unavailable.
+ *
+ * The module auto-detects which mode to use based on the GITHUB_ACTIONS
+ * environment variable and the availability of the GitHub context.
  */
+
+import * as fs from 'node:fs';
+import { execSync } from 'node:child_process';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+
+// ─── Octokit mode ──────────────────────────────────────────────────────────
+
+/**
+ * Get an authenticated octokit client from the GitHub Actions context.
+ * Returns null if the context is not available.
+ */
+function getOctokit() {
+  try {
+    const token = core.getInput('github_token');
+    if (!token) return null;
+    return github.getOctokit(token);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get the owner and repo from the GitHub context.
+ */
+function getOwnerRepoFromContext(): { owner: string; repo: string } | null {
+  try {
+    const { owner, repo } = github.context.repo;
+    return { owner, repo };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Post a comment on the current PR using octokit.
+ */
+function postCommentWithOctokit(comment: string): boolean {
+  const octokit = getOctokit();
+  if (!octokit) return false;
+
+  const repo = getOwnerRepoFromContext();
+  if (!repo) return false;
+
+  const prNumber = getPrNumber();
+  if (!prNumber) return false;
+
+  try {
+    octokit.rest.issues.createComment({
+      owner: repo.owner,
+      repo: repo.repo,
+      issue_number: prNumber,
+      body: comment,
+    });
+    return true;
+  } catch (error) {
+    core.warning(`Failed to post comment via octokit: ${error}`);
+    return false;
+  }
+}
+
+/**
+ * Set a check status on the current commit using octokit.
+ */
+function setCheckStatusWithOctokit(
+  state: 'success' | 'neutral' | 'failure' | 'skipped' | 'error',
+  description: string,
+): boolean {
+  const octokit = getOctokit();
+  if (!octokit) return false;
+
+  const repo = getOwnerRepoFromContext();
+  if (!repo) return false;
+
+  const sha = process.env.GITHUB_SHA;
+  if (!sha) return false;
+
+  const title = 'Accessibility Check';
+
+  // Map our states to GitHub Check Run conclusions
+  // 'error' is not a valid conclusion; map to 'failure'
+  const conclusion = state === 'error' ? 'failure' : state;
+
+  try {
+    octokit.rest.checks.create({
+      owner: repo.owner,
+      repo: repo.repo,
+      name: title,
+      head_sha: sha,
+      status: 'completed',
+      conclusion,
+      output: {
+        title,
+        summary: description,
+        text: description,
+      },
+    });
+    return true;
+  } catch (error) {
+    core.warning(`Failed to set check status via octokit: ${error}`);
+    return false;
+  }
+}
+
+// ─── gh CLI fallback ───────────────────────────────────────────────────────
 
 let ghAvailable: boolean | null = null;
 
@@ -36,65 +142,53 @@ function checkGh(): boolean {
 }
 
 /**
- * Post a comment on the current PR.
- * Uses `gh pr comment` with the PR number from the GITHUB_REF environment variable.
+ * Post a comment on the current PR using gh CLI.
  */
-export function postComment(comment: string): void {
-  if (!checkGh()) {
-    console.warn('gh CLI not available. Skipping PR comment.');
-    return;
-  }
+function postCommentWithGhCli(comment: string): boolean {
+  if (!checkGh()) return false;
 
   const prNumber = getPrNumber();
-  if (!prNumber) {
-    console.warn('Not in a PR context. Skipping PR comment.');
-    return;
-  }
+  if (!prNumber) return false;
 
   const ownerRepo = getOwnerRepo();
-  if (!ownerRepo) {
-    console.warn('Could not determine owner/repo. Skipping PR comment.');
-    return;
-  }
+  if (!ownerRepo) return false;
 
   // Write comment to temp file to avoid shell escaping issues
   const tmpFile = `/tmp/a11y-fixer-comment-${Date.now()}.md`;
-  execSync(`cat > ${tmpFile}`, { input: comment, encoding: 'utf-8' });
 
   try {
+    execSync(`cat > ${tmpFile}`, { input: comment, encoding: 'utf-8' });
     execSync(`gh pr comment ${prNumber} --repo ${ownerRepo} --body-file "${tmpFile}"`, {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'ignore'],
     });
+    return true;
+  } catch (error) {
+    core.warning(`Failed to post comment via gh CLI: ${error}`);
+    return false;
   } finally {
-    execSync(`rm -f "${tmpFile}"`);
+    try {
+      execSync(`rm -f "${tmpFile}"`);
+    } catch {
+      // ignore cleanup errors
+    }
   }
 }
 
 /**
- * Set a check status on the current commit.
- * Uses `gh api` to set the check run status.
+ * Set a check status on the current commit using gh CLI.
  */
-export function setCheckStatus(
+function setCheckStatusWithGhCli(
   state: 'success' | 'neutral' | 'failure' | 'skipped' | 'error',
   description: string,
-): void {
-  if (!checkGh()) {
-    console.warn('gh CLI not available. Skipping check status.');
-    return;
-  }
+): boolean {
+  if (!checkGh()) return false;
 
   const sha = process.env.GITHUB_SHA;
-  if (!sha) {
-    console.warn('GITHUB_SHA not set. Skipping check status.');
-    return;
-  }
+  if (!sha) return false;
 
   const ownerRepo = getOwnerRepo();
-  if (!ownerRepo) {
-    console.warn('Could not determine owner/repo. Skipping check status.');
-    return;
-  }
+  if (!ownerRepo) return false;
 
   const title = 'Accessibility Check';
 
@@ -103,9 +197,40 @@ export function setCheckStatus(
       `gh api repos/${ownerRepo}/check-runs --field name="${title}" --field head_sha="${sha}" --field status=completed --field conclusion="${state}" --field output:title="${title}" --field output:text="${description}" --field output:summary="${description}"`,
       { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] },
     );
+    return true;
   } catch (error) {
-    console.warn(`Failed to set check status: ${error}`);
+    core.warning(`Failed to set check status via gh CLI: ${error}`);
+    return false;
   }
+}
+
+// ─── Public API ────────────────────────────────────────────────────────────
+
+/**
+ * Post a comment on the current PR.
+ *
+ * Tries octokit first, falls back to gh CLI.
+ * Silently skips if neither is available.
+ */
+export function postComment(comment: string): void {
+  if (postCommentWithOctokit(comment)) return;
+  if (postCommentWithGhCli(comment)) return;
+  console.warn('No GitHub API available. Skipping PR comment.');
+}
+
+/**
+ * Set a check status on the current commit.
+ *
+ * Tries octokit first, falls back to gh CLI.
+ * Silently skips if neither is available.
+ */
+export function setCheckStatus(
+  state: 'success' | 'neutral' | 'failure' | 'skipped' | 'error',
+  description: string,
+): void {
+  if (setCheckStatusWithOctokit(state, description)) return;
+  if (setCheckStatusWithGhCli(state, description)) return;
+  console.warn('No GitHub API available. Skipping check status.');
 }
 
 /**
@@ -127,12 +252,16 @@ export function getOwnerRepo(): string | null {
 
 /**
  * Get the base branch SHA from the GitHub event payload.
+ *
+ * Reads the event payload from the GITHUB_EVENT_PATH file directly
+ * (no execSync needed).
  */
 export function getBaseSha(): string | null {
   try {
     const eventPath = process.env.GITHUB_EVENT_PATH;
     if (!eventPath) return null;
-    const event = JSON.parse(execSync(`cat ${eventPath}`, { encoding: 'utf-8' }));
+    const content = fs.readFileSync(eventPath, 'utf-8');
+    const event = JSON.parse(content);
     return event.pull_request?.base?.sha ?? null;
   } catch {
     return null;
@@ -141,12 +270,16 @@ export function getBaseSha(): string | null {
 
 /**
  * Get the head branch SHA from the GitHub event payload.
+ *
+ * Reads the event payload from the GITHUB_EVENT_PATH file directly
+ * (no execSync needed).
  */
 export function getHeadSha(): string | null {
   try {
     const eventPath = process.env.GITHUB_EVENT_PATH;
     if (!eventPath) return null;
-    const event = JSON.parse(execSync(`cat ${eventPath}`, { encoding: 'utf-8' }));
+    const content = fs.readFileSync(eventPath, 'utf-8');
+    const event = JSON.parse(content);
     return event.pull_request?.head?.sha ?? null;
   } catch {
     return null;

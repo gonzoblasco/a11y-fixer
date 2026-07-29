@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.6.0] — 2026-07-28
+
+### Fixed
+
+- **Baseline cache now uses GitHub Actions artifacts** — `cache.ts` uploads/downloads
+  baselines as workflow artifacts when running in GHA, with filesystem fallback
+  for local development and tests. Evolution comparison now works in production.
+- **GitHub API calls use octokit natively** — `github.ts` now uses `@actions/github`
+  (octokit) for posting PR comments and setting check statuses, with `gh` CLI
+  as fallback. Also reads event payload from file instead of `execSync cat`.
+- **Entry point guard** — `action.ts` only invokes `run()` when loaded as the
+  entry point, preventing accidental execution on import.
+
 ## [0.5.1] — 2026-07-28
 
 ### Fixed

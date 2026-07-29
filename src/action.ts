@@ -103,7 +103,7 @@ export async function run(): Promise<void> {
       core.info(`Total violations: ${result.totalCount}`);
 
       // 8. Load baseline and compare
-      const baseline = loadBaseline(baseSha);
+      const baseline = await loadBaseline(baseSha);
       const evolution = compare(result, baseline);
       core.info(
         `Evolution: ${evolution.trend} (${evolution.newViolations.length} new, ${evolution.fixedViolations.length} fixed)`,
@@ -141,7 +141,7 @@ export async function run(): Promise<void> {
       }
 
       // 12. Save baseline for next comparison
-      saveBaseline(result, headSha);
+      await saveBaseline(result, headSha);
       core.info('Baseline saved for future comparison');
     } finally {
       await closeBrowser(browser);
@@ -157,5 +157,8 @@ export async function run(): Promise<void> {
   }
 }
 
-// Invoke the action
-run();
+// Invoke the action only when this file is the entry point
+const isEntryPoint = process.argv[1]?.replace(/\.[cm]?[jt]s$/, '') === __filename.replace(/\.[cm]?[jt]s$/, '');
+if (isEntryPoint) {
+  run();
+}

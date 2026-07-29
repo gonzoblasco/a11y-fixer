@@ -107,7 +107,7 @@ describe('Full pipeline integration', () => {
     await page.goto(filePath, { waitUntil: 'networkidle' });
     const violations1 = await runAudit(page);
     const result1 = processViolations(violations1);
-    saveBaseline(result1, TEST_SHA);
+    await saveBaseline(result1, TEST_SHA);
 
     // Second run: scan a better page
     const goodPath = `file://${path.join(FIXTURES_DIR, 'good.html')}`;
@@ -116,7 +116,7 @@ describe('Full pipeline integration', () => {
     const result2 = processViolations(violations2);
 
     // Load baseline and compare
-    const baseline = loadBaseline(TEST_SHA);
+    const baseline = await loadBaseline(TEST_SHA);
     const evolution = compare(result2, baseline);
 
     expect(evolution.trend).toBe('improves');
