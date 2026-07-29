@@ -1,5 +1,5 @@
 {
-  "name": "a11y-fixer",
+  "name": "@gonzoblasco/a11y-fixer",
   "version": "0.6.0",
   "description": "Accessibility audit bot for GitHub PRs — automated WCAG checks with AI-powered fix suggestions",
   "private": false,
