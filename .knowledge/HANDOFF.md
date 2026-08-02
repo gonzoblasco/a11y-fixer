@@ -2,7 +2,7 @@
 # Project: A11y Fixer
 > Path: /Users/gonzoblasco/.openclaw/workspace/projects/a11y-fixer
 > Repo: https://github.com/gonzoblasco/a11y-fixer.git
-> Last Session: never | Sessions: 0
+> Last Session: 2026-08-02 | Sessions: 1
 
 ## What This Is
 Accessibility audit bot for GitHub PRs. Runs axe-core via Playwright on every pull request, detects new accessibility violations, and posts structured feedback as a PR comment.
@@ -14,10 +14,12 @@ TypeScript, GitHub Actions, Playwright, axe-core, Biome, Vitest
 Evolve a11y-fixer from v0.6.0 to a reliable CI accessibility enforcement tool with clear differentiation
 
 ## Where I Left Off
-_Not yet recorded._
+Project registered; ready to define next evolution steps
 
 ## Next Steps
-_Not yet recorded._
+1. Define v0.7 roadmap: baseline comparison, AI explanations, config validation
+2. Open issues for known gaps and invite feedback
+3. Add session-context save to a11y-fixer close ritual
 
 ## Blockers
 - None
@@ -25,4 +27,4 @@ _Not yet recorded._
 ## Decisions Made
 | Decision | Why | Date |
 |----------|-----|------|
-| _(none yet)_ | | |
+| Register a11y-fixer in session-context | Centralize project memory and replace scattered notes for a11y-fixer | 2026-08-02 |
