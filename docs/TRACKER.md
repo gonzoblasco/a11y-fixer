@@ -1,6 +1,6 @@
 # a11y-fixer — MVP Tracker
 
-> **Status:** Phase 0.4 (Planning)
+> **Status:** ARCHIVED (2026-09-14). Work reached 40/40 tasks across phases 1-4 before archival.
 > **Date:** 2026-07-27
 > **Target:** Phase 1 — Core Engine (MVP)
 > **Based on:** ROADMAP.md

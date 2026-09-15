@@ -1,6 +1,6 @@
 # a11y-fixer — Roadmap
 
-> **Status:** Phase 4 (In Progress)
+> **Status:** ARCHIVED (2026-09-14). Previously Phase 4 (In Progress).
 > **Date:** 2026-07-27
 > **Target version:** 1.0.0
 

@@ -1,5 +1,7 @@
 # a11y-fixer
 
+> **ARCHIVED (2026-09-14)** - This project is no longer maintained. Portfolio successor: **kanam-fixer** (a new project; scope still to be defined). The code is kept as a reference.
+
 [![CI](https://github.com/gonzoblasco/a11y-fixer/actions/workflows/ci.yml/badge.svg)](https://github.com/gonzoblasco/a11y-fixer/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-102%20passing-brightgreen)](https://github.com/gonzoblasco/a11y-fixer)
 [![Version](https://img.shields.io/github/v/release/gonzoblasco/a11y-fixer?include_prereleases)](https://github.com/gonzoblasco/a11y-fixer/releases)
