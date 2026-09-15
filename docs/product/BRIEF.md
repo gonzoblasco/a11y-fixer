@@ -1,6 +1,6 @@
 # a11y-fixer — Brief
 
-> **Status:** Phase 0.1 (Brainstorming)
+> **Status:** ARCHIVED (2026-09-14). Originally Phase 0.1 (Brainstorming), 2026-07-27.
 > **Date:** 2026-07-27
 
 ---

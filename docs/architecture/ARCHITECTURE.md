@@ -1,6 +1,6 @@
 # a11y-fixer — Architecture
 
-> **Status:** Phase 0.2 (Architecture)
+> **Status:** ARCHIVED (2026-09-14). Originally Phase 0.2 (Architecture), 2026-07-27.
 > **Date:** 2026-07-27
 > **Based on:** BRIEF.md, DEFINITION.md
 

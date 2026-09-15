@@ -1,6 +1,6 @@
 # a11y-fixer — Design (Voice & Tone)
 
-> **Status:** Phase 0.3 (Design)
+> **Status:** ARCHIVED (2026-09-14). Originally Phase 0.3 (Design), 2026-07-27.
 > **Date:** 2026-07-27
 > **Based on:** BRIEF.md, DEFINITION.md, ARCHITECTURE.md
 
